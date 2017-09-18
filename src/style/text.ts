@@ -1,3 +1,5 @@
+import { StyleSheet } from 'react-native';
+
 const text = StyleSheet.create({
     p: {
         color: 'black',
@@ -7,4 +9,6 @@ const text = StyleSheet.create({
     title: {
 
     }
-})
+});
+
+export default text;
