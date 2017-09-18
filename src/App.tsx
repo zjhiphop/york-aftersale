@@ -2,6 +2,7 @@ import * as React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Button, Grid, WhiteSpace } from 'antd-mobile';
 import layouts from './style/layout';
+var net = require('net');
 
 const menus = [{
     'icon': 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png',
@@ -16,6 +17,21 @@ const menus = [{
     'icon': 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png',
     'text': '我的'
 }];
+
+var client = new net.Socket();
+client.connect(3080, '127.0.0.1', function() {
+    console.log('Connected');
+    client.write('Hello, server! Love, Client.');
+});
+
+client.on('data', function(data) {
+    console.log('Received: ' + data);
+    client.destroy(); // kill client after server's response
+});
+
+client.on('close', function() {
+    console.log('Connection closed');
+});
 
 export default class App extends React.Component {
     render() {

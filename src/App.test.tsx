@@ -1,8 +1,8 @@
 import * as React from 'react';
 import App from './App';
-import * as net from 'react-native-tcp';
-
 import * as renderer from 'react-test-renderer';
+
+var net = require('net');
 
 it('renders without crashing', () => {
     const rendered = renderer.create(<App />).toJSON();
@@ -10,19 +10,19 @@ it('renders without crashing', () => {
 });
 
 it('Socket server could be connected', () => {
-    // var server = net.createServer(function(socket) {
-    //     socket.write('excellent!');
-    // }).listen(12345);
 
-    // var client = net.createConnection(12345);
+    var client = new net.Socket();
+    client.connect(3080, '127.0.0.1', function() {
+        console.log('Connected');
+        client.write('Hello, server! Love, Client.');
+    });
 
-    // expect(client).toBeDefined();
+    client.on('data', function(data) {
+        console.log('Received: ' + data);
+        client.destroy(); // kill client after server's response
+    });
 
-    // client.on('error', function(error) {
-    //     console.log(error);
-    // });
-
-    // client.on('data', function(data) {
-    //     console.log('message was received', data);
-    // });
+    client.on('close', function() {
+        console.log('Connection closed');
+    });
 });
