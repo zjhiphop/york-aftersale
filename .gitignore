@@ -8,3 +8,12 @@
 .externalNativeBuild
 node_modules
 .vscode/
+App.js
+App.js.map
+index.android.js
+index.android.js.map
+index.ios.js
+index.ios.js.map
+/src/**/*.js
+/src/**/*.map
+npm-debug.log

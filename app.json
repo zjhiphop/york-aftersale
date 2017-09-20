@@ -8,5 +8,7 @@
       ],
       "transformer": "node_modules/react-native-typescript-transformer/index.js"
     }
-  }
+  },
+  "name": "aftersale",
+  "displayName": "约克售后"
 }

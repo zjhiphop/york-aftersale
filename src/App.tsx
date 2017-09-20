@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
-import { Button, Grid, WhiteSpace } from 'antd-mobile';
-import layouts from './style/layout';
+import { StyleSheet, View, Image } from 'react-native';
+import { Grid, WhiteSpace } from 'antd-mobile';
+// import layouts from './style/layout';
 var net = require('net');
 
 const menus = [{
@@ -18,18 +18,17 @@ const menus = [{
     'text': '我的'
 }];
 
-var client = new net.Socket();
-client.connect(3080, '127.0.0.1', function() {
+var client = net.createConnection(3080, '192.168.9.106', function () {
     console.log('Connected');
     client.write('Hello, server! Love, Client.');
 });
 
-client.on('data', function(data) {
+client.on('data', function (data) {
     console.log('Received: ' + data);
     client.destroy(); // kill client after server's response
 });
 
-client.on('close', function() {
+client.on('close', function () {
     console.log('Connection closed');
 });
 
