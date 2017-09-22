@@ -27,16 +27,16 @@ public class MainApplication extends Application implements ReactApplication {
             new TcpSocketsModule()
       );
     }
+
+    @Override
+    protected String getJSMainModuleName() {
+      return "dist/index.android";
+    }
   };
 
   @Override
   public ReactNativeHost getReactNativeHost() {
     return mReactNativeHost;
-  }
-
-  @Override
-  protected String getJSMainModuleName() {
-    return "dist/index.android";
   }
 
   @Override

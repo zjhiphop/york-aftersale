@@ -1,0 +1,29 @@
+import * as React from 'react';
+import { View, Text } from 'react-native';
+import { InputItem, List, Button, WhiteSpace } from 'antd-mobile';
+
+export default class MyScreen extends React.Component {
+    static navigationOptions = {
+        title: '个人设置',
+    };
+    labelFocusInst;
+
+    render() {
+
+        const { navigate } = this.props['navigation'];
+
+        return (
+            <View>
+                <List>
+                    <List.Item extra="Jade">用户名</List.Item>
+                    <List.Item arrow="horizontal" onClick={e => {
+                        navigate('ResetPass');
+                    }}>密码修改</List.Item>
+                    <List.Item arrow="horizontal">关于</List.Item>
+                </List >
+                <WhiteSpace size="xl" />
+                <Button type="primary">退出登录</Button>
+            </View >
+        );
+    }
+};

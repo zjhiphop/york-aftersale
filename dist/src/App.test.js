@@ -7,8 +7,7 @@ it('renders without crashing', () => {
     expect(rendered).toBeTruthy();
 });
 it('Socket server could be connected', () => {
-    var client = new net.Socket();
-    client.connect(3080, '127.0.0.1', function () {
+    var client = net.createConnection(3080, '192.168.9.106', function () {
         console.log('Connected');
         client.write('Hello, server! Love, Client.');
     });

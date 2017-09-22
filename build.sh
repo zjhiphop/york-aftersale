@@ -1,4 +1,10 @@
 #!/bin/bash
+# ----------------------------------------------
+# Usage: 
+#   ./build.sh ios 1.0.1  -  publish ios version 1.0.1 to fir
+#   ./build.sh android 1.0.1  -  publish android version 1.0.1 to fir
+# ----------------------------------------------
+
 target="$1"
 VERSION="$2"
 FIR_TOKEN='f1842f3fe91dc1137016fa524e018a66'
