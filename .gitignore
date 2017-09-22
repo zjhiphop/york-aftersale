@@ -21,3 +21,5 @@ dist
 ios/dist
 ios/main.jsbundle
 ios/main.jsbundle.meta
+android/build
+android/app/build
