@@ -1,21 +1,53 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import { Card, Picker, WingBlank, WhiteSpace, List, Modal, PickerView, Button } from 'antd-mobile';
+import { seq } from '../utils/misc';
+import Mqtt from '../utils/mqtt';
+import { EventRegister } from 'react-native-event-listeners'
 
 const Item = List.Item;
 const Brief = Item.Brief;
 const prompt = Modal.prompt;
 const alert = Modal.alert;
 
-const coldInTempRange = [...Array(21).keys()].slice(10).map(item => { return { value: item, label: item } }); // 10-20
-const hotInTempRange = [...Array(48).keys()].slice(25).map(item => { return { value: item, label: item } }); // 25 - 47
-const coldOutTempRange = [...Array(16).keys()].slice(5).map(item => { return { value: item, label: item } }); // 5-15
-const hotOutTempRange = [...Array(61).keys()].slice(30).map(item => { return { value: item, label: item } }); // 30 - 60
+const coldInTempRange = seq(21).slice(10).map(item => { return { value: item, label: item } }); // 10-20
+const hotInTempRange = seq(48).slice(25).map(item => { return { value: item, label: item } }); // 25 - 47
+const coldOutTempRange = seq(16).slice(5).map(item => { return { value: item, label: item } }); // 5-15
+const hotOutTempRange = seq(61).slice(30).map(item => { return { value: item, label: item } }); // 30 - 60
 const ctrlRange = [{ value: 0, label: '系统回水' }, { value: 1, label: '系统出水' }];
 
 const tempWaterActionRange = [...Array(4).keys()].slice(1).map(item => { return { value: item, label: item } }); // 1-3
+const TOPIC_DATA = '/MAC/123123213123123/DR';
+const TOPIC_CTRL = '/MAC/123123213123123/DC';
+const TOPIC_CFG = '/MAC/123123213123123/CFG';
 
 export default class SettingDetailScreen extends React.Component {
+    constructor(props) {
+        super(props);
+        let client = new Mqtt({
+            topics: [
+                '/MAC/123123213123123/DC',
+                '/MAC/123123213123123/DR',
+                '/MAC/123123213123123/DA'
+            ]
+        });
+
+        this.initEvents()
+    }
+
+    initEvents() {
+        EventRegister.on(TOPIC_DATA, payload => {
+            console.log('new data read: ', payload);
+        });
+
+        EventRegister.on(TOPIC_CTRL, payload => {
+            console.log('new ctrl read: ', payload);
+        });
+
+        EventRegister.on(TOPIC_CFG, payload => {
+            console.log('new cfg read: ', payload);
+        });
+    }
     static navigationOptions = {
         title: '温控设置详情'
     };

@@ -1,14 +1,36 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
-import { WhiteSpace, ActivityIndicator, List, SearchBar } from 'antd-mobile';
+import { WhiteSpace, ActivityIndicator, List, Button, SearchBar, Modal } from 'antd-mobile';
+import { TcpManager } from '../utils/tcp';
+const prompt = Modal.prompt;
 export default class SettingScreen extends React.Component {
     constructor() {
         super(...arguments);
         this.state = {
             percent: 10,
             focused: false,
-            searchText: ''
+            searchText: '',
+            connecting: false
         };
+    }
+    onConfigWIFI() {
+        this.setState({
+            connecting: true
+        });
+        setTimeout(() => {
+            this.setState({ connecting: false });
+        }, 2000);
+        TcpManager.tryConnect().then(client => {
+            /**
+             * Exp1：“SSID:HUAWEIKEY:12345678”//有加密Exp2：
+             * “SSID:HUAWEIKEY:NONE”//开放，无加密
+             */
+            prompt('WIFI配置', '请输入WIFI SSID和密码', (ssid, pass) => {
+                alert(`SSID:${ssid}KEY:${pass}`);
+                client['write'](`SSID:${ssid}KEY:${pass}`);
+            }, 'login-password');
+            this.setState({ connecting: false });
+        });
     }
     render() {
         const { navigate } = this.props['navigation'];
@@ -16,6 +38,10 @@ export default class SettingScreen extends React.Component {
             React.createElement(WhiteSpace, null),
             React.createElement(Text, null, "\u6B63\u5728\u68C0\u6D4B\u70ED\u70B9..."),
             React.createElement(ActivityIndicator, null),
+            React.createElement(Button, { onClick: e => {
+                    this.onConfigWIFI();
+                } }, "\u914D\u7F6E\u6E29\u63A7WIFI"),
+            React.createElement(ActivityIndicator, { toast: true, text: "正在连接...", animating: this.state.connecting }),
             React.createElement(WhiteSpace, null),
             React.createElement(List, { renderHeader: () => '温控搜索' },
                 React.createElement(SearchBar, { placeholder: "请输入用户手机号", focused: this.state.focused, onFocus: () => {

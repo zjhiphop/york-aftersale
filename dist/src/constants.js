@@ -90,4 +90,11 @@ export const ERRORS = ERROR_STR.trim()
         desc: data[2]
     };
 });
+export const TCP_CONFIG = {
+    host: '10.10.100.254',
+    port: 8899
+};
+export const API_CONFIG = {
+    server: 'http://live.chinabolang.com:3250/api'
+};
 //# sourceMappingURL=constants.js.map
