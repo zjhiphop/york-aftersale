@@ -8,8 +8,9 @@ const PATH = {
 }
 
 let OrderSvc = {
-    list() {
-        return API.post(PATH.LIST)
+    list(status?) {
+        status = status || 0;
+        return API.get(PATH.LIST + '?status=' + status);
     },
     detail(id) {
         return API.get(PATH.DETAIL + id);

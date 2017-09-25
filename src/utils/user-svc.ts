@@ -13,6 +13,8 @@ let UserSvc = {
             password: pass
         }).then(res => {
             AsyncStorage.setItem('token', res.token);
+            API.updateToken(res.token);
+
             return res;
         })
     },

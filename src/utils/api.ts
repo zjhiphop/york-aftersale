@@ -13,15 +13,23 @@ class API {
         this.server = config.server;
         this.headers = config.headers || this.headers;
 
-        AsyncStorage.getItem('token').then(token => this.token = token)
+        AsyncStorage.getItem('token').then(token => this.headers['User-Token'] = token)
     }
+
+    updateToken(token) {
+        this.headers['User-Token'] = token;
+    }
+
 
     onFetchError(error) {
         console.log(error);
     }
 
-    async get(path) {
+    async get(path, data?) {
         try {
+
+            data = data || {};
+
             let promise = fetch(this.server + path, {
                 method: 'GET',
                 headers: this.headers
@@ -40,7 +48,8 @@ class API {
     async post(path, data?) {
         try {
             data = data || {};
-            data.token = this.token;
+
+            console.log(this.headers);
 
             let promise = fetch(this.server + path, {
                 method: 'POST',
