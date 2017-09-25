@@ -1,5 +1,6 @@
 import { Client, Message } from 'react-native-paho-mqtt';
 import { EventRegister } from 'react-native-event-listeners';
+import { w3cwebsocket as webSocket } from 'websocket';
 //Set up an in-memory alternative to global localStorage 
 const myStorage = {
     setItem: (key, item) => {
@@ -15,9 +16,10 @@ export default class Mqtt {
         config.host = config.host || 'live.chinabolang.com';
         config.port = config.port || 3000;
         this.client = new Client({
-            uri: `ws://${config.host}:${config.port}/ws`,
+            uri: `ws://${config.host}:${config.port}/mqtt`,
             clientId: 'RN_YORK',
-            storage: myStorage
+            storage: myStorage,
+            webSocket: webSocket
         });
         // set event handlers 
         this.client.on('connectionLost', (responseObject) => {
@@ -62,7 +64,7 @@ export default class Mqtt {
         // connect the client 
         return this.client.connect({
             userName: 'admin',
-            password: 'bolang'
+            password: 'public'
         })
             .then(() => {
             // Once a connection has been made, make a subscription and send a message. 
