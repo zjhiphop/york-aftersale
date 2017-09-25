@@ -4,7 +4,13 @@ import { AsyncStorage } from 'react-native';
 const PATH = {
     LOGIN: '/user/login',
     CHANGE_PASS: '/user/changePassword'
-}
+};
+
+let user;
+
+AsyncStorage.getItem('user').then(res => {
+    user = JSON.parse(res || '{}');
+});
 
 let UserSvc = {
     login(phone, pass) {
@@ -13,7 +19,9 @@ let UserSvc = {
             password: pass
         }).then(res => {
             AsyncStorage.setItem('token', res.token);
+            AsyncStorage.setItem('user', JSON.stringify(res.user));
             API.updateToken(res.token);
+            user = res.user;
 
             return res;
         })
@@ -21,6 +29,7 @@ let UserSvc = {
 
     changePass(oldPass, newPass, confirmPass) {
         return API.post(PATH.CHANGE_PASS, {
+            _id: user.id,
             oldPassword: oldPass,
             newPassword: newPass,
             confirmPassword: confirmPass
