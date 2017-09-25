@@ -13,10 +13,20 @@ const myStorage = {
     }
 };
 
-export default class Mqtt {
-    client: Client;
+let createMessage = (topic, payload, qos?, retain?) => {
+    let message = new Paho.MQTT.Message(payload);
+    message.destinationName = topic;
+    message.qos = Number(qos) || 0;
+    message.retained = !!retain;
 
-    constructor(config: MQTT_CONFIG) {
+    return message;
+}
+
+class Mqtt {
+    client: Client;
+    topics = [];
+    constructor(config?: MQTT_CONFIG) {
+        config = config || {};
         config.host = config.host || 'live.chinabolang.com';
         config.port = config.port || 3000;
 
@@ -44,7 +54,7 @@ export default class Mqtt {
         });
 
         this.connect().then(() => {
-            return this.client.subscribe.apply(this.client, config.topics || []);
+            return this.client.subscribe.apply(this.client, this.topics || []);
         });
     }
 
@@ -54,6 +64,25 @@ export default class Mqtt {
         } catch (e) {
 
         }
+    }
+
+    subscribe(clientTopics) {
+        this.topics = this.topics.concat(clientTopics || []);
+
+        if (this.client.isConnected()) {
+            return this.client.subscribe.apply(this.client, this.topics || []);
+        } else {
+
+        }
+    }
+
+    onConnectSuccess() {
+        this.client.subscribe.apply(this.client, this.topics || []);
+    }
+
+    /*topic: string | Message, payload: string, qos: 0 | 1 | 2, retained: boolean*/
+    send(topic, payload) {
+        this.client.send(topic, payload, 1, false);
     }
 
     connect() {
@@ -74,10 +103,15 @@ export default class Mqtt {
            }
         */
 
+        if (this.client.isConnected()) return new Promise(resolver => {
+            resolver(this.client);
+        });
+
         // connect the client 
         return this.client.connect({
             userName: 'admin',
-            password: 'public'
+            password: 'public',
+            onSuccess: this.onConnectSuccess.bind(this)
         })
             .then(() => {
                 // Once a connection has been made, make a subscription and send a message. 
@@ -97,3 +131,5 @@ export default class Mqtt {
     }
 
 }
+
+export default new Mqtt();

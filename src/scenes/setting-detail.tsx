@@ -4,6 +4,7 @@ import { Card, Picker, WingBlank, WhiteSpace, List, Modal, PickerView, Button } 
 import { seq } from '../utils/misc';
 import Mqtt from '../utils/mqtt';
 import { EventRegister } from 'react-native-event-listeners'
+import { composeMQTTPayload, CTRL_KEY, CFG_KEY, TIME_KEY } from '../utils/misc';
 
 const Item = List.Item;
 const Brief = Item.Brief;
@@ -17,22 +18,28 @@ const hotOutTempRange = seq(61).slice(30).map(item => { return { value: item, la
 const ctrlRange = [{ value: 0, label: '系统回水' }, { value: 1, label: '系统出水' }];
 
 const tempWaterActionRange = [...Array(4).keys()].slice(1).map(item => { return { value: item, label: item } }); // 1-3
-const TOPIC_DATA = '/MAC/123123213123123/DR';
-const TOPIC_CTRL = '/MAC/123123213123123/DC';
-const TOPIC_CFG = '/MAC/123123213123123/CFG';
+const MAC = 'F0FE6B2F980E0000';
+const TOPIC_DATA = `/MAC/${MAC}/DR`;
+const TOPIC_CTRL = `/MAC/${MAC}/DC`;
+const TOPIC_CFG = `/MAC/${MAC}/DFG`;
+const TOPIC_DR = `/MAC/${MAC}/DR`;
 
 export default class SettingDetailScreen extends React.Component {
     constructor(props) {
         super(props);
-        let client = new Mqtt({
-            topics: [
-                '/MAC/123123213123123/DC',
-                '/MAC/123123213123123/DR',
-                '/MAC/123123213123123/DA'
-            ]
-        });
+        let client = Mqtt.subscribe([
+            `/MAC/${MAC}/#`
+        ]);
 
-        this.initEvents()
+        this.initEvents();
+        this.query();
+    }
+
+    query() {
+        Mqtt.send(TOPIC_DR, composeMQTTPayload({
+            action: 'DR',
+            MAC: MAC
+        }));
     }
 
     initEvents() {
