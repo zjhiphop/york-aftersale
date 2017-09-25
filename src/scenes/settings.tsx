@@ -17,7 +17,8 @@ export default class SettingScreen extends React.Component {
         percent: 10,
         focused: false,
         searchText: '',
-        connecting: false
+        connecting: false,
+        loadingText: '正在连接温控热点(York)...'
     }
 
     onConfigWIFI() {
@@ -31,6 +32,8 @@ export default class SettingScreen extends React.Component {
 
         TcpManager.tryConnect().then(client => {
 
+            this.setState({ connecting: false });
+
             /**
              * Exp1：“SSID:HUAWEIKEY:12345678”//有加密Exp2：
              * “SSID:HUAWEIKEY:NONE”//开放，无加密
@@ -39,13 +42,17 @@ export default class SettingScreen extends React.Component {
                 'WIFI配置',
                 '请输入WIFI SSID和密码',
                 (ssid, pass) => {
-                    alert(`SSID:${ssid}KEY:${pass}`);
-                    client['write'](`SSID:${ssid}KEY:${pass}`);
+
+                    this.setState({
+                        loadingText: `正在配置温控SSID和密码: SSID:${ssid}KEY:${pass}`
+                    });
+
+                    setTimeout(() => {
+                        client['write'](`SSID:${ssid}KEY:${pass}`);
+                    }, 50);
                 },
                 'login-password'
             );
-
-            this.setState({ connecting: false });
 
         });
 
@@ -55,13 +62,12 @@ export default class SettingScreen extends React.Component {
         return (
             <View>
                 <WhiteSpace />
-                <Text>正在检测热点...</Text><ActivityIndicator></ActivityIndicator>
                 <Button onClick={e => {
                     this.onConfigWIFI();
                 }}>配置温控WIFI</Button>
                 <ActivityIndicator
                     toast
-                    text="正在连接..."
+                    text={this.state.loadingText}
                     animating={this.state.connecting}
                 />
                 <WhiteSpace />

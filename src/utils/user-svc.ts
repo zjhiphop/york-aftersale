@@ -13,7 +13,7 @@ let UserSvc = {
             password: pass
         }).then(res => {
             AsyncStorage.setItem('token', res.token);
-
+            return res;
         })
     },
 
@@ -23,6 +23,10 @@ let UserSvc = {
             newPassword: newPass,
             confirmPassword: confirmPass
         });
+    },
+
+    getGatesList() {
+
     }
 }
 

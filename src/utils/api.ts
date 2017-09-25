@@ -16,13 +16,21 @@ class API {
         AsyncStorage.getItem('token').then(token => this.token = token)
     }
 
+    onFetchError(error) {
+        console.log(error);
+    }
+
     async get(path) {
         try {
-            let response = await fetch(this.server + path, {
+            let promise = fetch(this.server + path, {
                 method: 'GET',
-                headers: this.headers,
-                body: null
+                headers: this.headers
             });
+
+            let response = await promise;
+
+            promise.catch(this.onFetchError.bind(this));
+
             return await response.json();
         } catch (error) {
             console.error(error);
@@ -34,11 +42,16 @@ class API {
             data = data || {};
             data.token = this.token;
 
-            let response = await fetch(this.server + path, {
+            let promise = fetch(this.server + path, {
                 method: 'POST',
                 headers: this.headers,
-                body: data
+                body: JSON.stringify(data)
             });
+
+            promise.catch(this.onFetchError.bind(this));
+
+            let response = await promise;
+
             return await response.json();
         } catch (error) {
             console.error(error);

@@ -6,6 +6,10 @@ interface MQTT_CONFIG {
     topics?: Array<string>
 }
 
+declare module '*.png'
+declare module '*.jpg'
+declare module '*.jpeg'
+
 declare namespace Events {
     class Bus {
         setMaxListeners(n: number): void;
