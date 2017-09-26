@@ -41,13 +41,38 @@ export default class SettingDetailScreen extends React.Component {
 
         this.initEvents();
         this.query();
+
+        console.log(this.props);
+
+        this.props['navigator'].setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     }
+
+    static navigatorButtons = {
+        // https://github.com/wix/react-native-navigation/blob/master/docs/adding-buttons-to-the-navigator.md
+        rightButtons: [
+            {
+                title: '初始化', // for a textual button, provide the button title (label)
+                id: 'init', // id for this button, given in onNavigatorEvent(event) to help understand which button was clicked
+                testID: 'e2e_rules', // optional, used to locate this view in end-to-end tests
+                buttonFontSize: 14, // Set font size for the button (can also be used in setButtons function to set different button style programatically)
+                buttonFontWeight: '600', // Set font weight for the button (can also be used in setButtons function to set different button style programatically)
+            }
+        ]
+    };
 
     query() {
         Mqtt.send(TOPIC_DR, composeMQTTPayload({
             action: MQTT_ACTION.DR,
             MAC: MAC
         }));
+    }
+
+    onNavigatorEvent(event) { // this is the onPress handler for the two buttons together
+        if (event.type == 'NavBarButtonPress') { // this is the event type for button presses
+            if (event.id == 'edit') { // this is the same id field from the static navigatorButtons definition
+                window.alert('init button clicked!');
+            }
+        }
     }
 
     initEvents() {
@@ -126,7 +151,7 @@ export default class SettingDetailScreen extends React.Component {
             <View>
                 <WhiteSpace />
                 <List>
-                    <Picker
+                    <Picker extra={this.state.coldInTemp}
                         data={coldInTempRange}
                         onOk={v => {
                             this.setState({
@@ -135,10 +160,10 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制冷回水温度设定值 {this.state.coldInTemp}</Item>
+                        <Item arrow="horizontal">制冷回水温度设定值</Item>
                     </Picker>
 
-                    <Picker
+                    <Picker extra={this.state.hotInTemp}
                         data={coldInTempRange}
                         onOk={v => {
                             this.setState({
@@ -147,10 +172,10 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制热回水温度设定 {this.state.hotInTemp}</Item>
+                        <Item arrow="horizontal">制热回水温度设定</Item>
                     </Picker>
 
-                    <Picker
+                    <Picker extra={this.state.coldOutTemp}
                         data={coldOutTempRange}
                         onOk={v => {
                             this.setState({
@@ -159,11 +184,11 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制冷出水温度设定 {this.state.coldOutTemp}</Item>
+                        <Item arrow="horizontal">制冷出水温度设定</Item>
                     </Picker>
 
 
-                    <Picker
+                    <Picker extra={this.state.hotOutTemp}
                         data={hotOutTempRange}
                         onOk={v => {
                             this.setState({
@@ -172,11 +197,11 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制热出水温度设定 {this.state.hotOutTemp}</Item>
+                        <Item arrow="horizontal">制热出水温度设定</Item>
                     </Picker>
 
 
-                    <Picker
+                    <Picker extra={this.state.coldCtrl}
                         data={ctrlRange}
                         onOk={v => {
                             this.setState({
@@ -185,10 +210,10 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制冷控制选择设定{this.state.coldCtrl}</Item>
+                        <Item arrow="horizontal">制冷控制选择设定</Item>
                     </Picker>
 
-                    <Picker
+                    <Picker extra={this.state.hotCtrl}
                         data={ctrlRange}
                         onOk={v => {
                             this.setState({
@@ -197,10 +222,10 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制热控制选择设定  {this.state.hotCtrl}</Item>
+                        <Item arrow="horizontal">制热控制选择设定</Item>
                     </Picker>
 
-                    <Picker
+                    <Picker extra={this.state.tempWaterAction}
                         data={tempWaterActionRange}
                         onOk={v => {
                             this.setState({
@@ -209,7 +234,7 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">水温动作回差设定 {this.state.tempWaterAction}</Item>
+                        <Item arrow="horizontal">水温动作回差设定</Item>
                     </Picker>
 
                     <Item extra={this.state.ctrlCycle}>
@@ -225,7 +250,7 @@ export default class SettingDetailScreen extends React.Component {
                         {this.state.status.exception.values.map(item => {
                             <Text>{item.code} {item.value} {item.desc}</Text>
                         })}
-                        <Button type="primary" style={{ position: "absolute", right: 0 }}>清除</Button>
+                        <Button type="primary" style={{ position: "absolute", height: 50, top: -20, right: 0 }}>清除</Button>
                     </View>
                 }>故障状态码</Item>
                 <Item multipleLine extra={
@@ -236,8 +261,7 @@ export default class SettingDetailScreen extends React.Component {
                         <Text>出水温度: {this.state.status.tempOut}</Text>
                         <Text>环境温度: {this.state.status.tempEnv}</Text>
                     </View>
-                }>
-                    当前温控状态</Item>
+                }>当前温控状态</Item>
             </View>
         );
     }
