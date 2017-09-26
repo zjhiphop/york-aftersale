@@ -1,5 +1,9 @@
-export function seq(len) {
-    return Array.apply(null, { length: len }).map(Function.call, Number);
+import { ERRORS } from "../constants";
+
+export enum MQTT_ACTION {
+    DR,
+    DC,
+    CFG
 }
 
 export enum CTRL_KEY {
@@ -27,6 +31,37 @@ export enum CFG_KEY {
     SetTemp_WaterAction
 }
 
+export enum POWER {
+    OFF,
+    ON
+}
+
+export enum MODE {
+    COLD,
+    HEAT,
+    COLD_QUICK_HEAT,
+    HEAT_QUICK_COLD,
+    COLD_PLAIN_HEAT,
+    HEAT_PLAIN_HEAT,
+    QUICK_HEAT,
+    PLAIN_HEAT,
+    LOOP
+}
+
+export enum CONNEC_STATUS {
+    OFF,
+    ON
+}
+
+export enum EXCP_STATUS {
+    OK,
+    EXCEPTION
+}
+
+export function seq(len) {
+    return Array.apply(null, { length: len }).map(Function.call, Number);
+}
+
 export function ensureBytes(data, len, dir = 'left') {
     data = data || '';
     let bitsLen = len * 2;
@@ -39,6 +74,30 @@ export function ensureBytes(data, len, dir = 'left') {
     return data + new Array(paddingLen + 1).join('0');
 }
 
+export function tempTo16Hex(temp) {
+    return (temp * 10).toString(16);
+}
+
+/**
+ * 
+ * 将温度值转换为“小端”格式
+ * 例如： 转换40.0度
+ * 1. 乘以10然后用16进制表示: 190
+ * 2. 按两字节拆分， 不足在低位补0: 01 90
+ * 3. 交换高位和地位字节： 90 01
+ * @export
+*/
+export function temp2Internal(temp, isReverse?) {
+    // 反向转换
+    if (isReverse) {
+        return parseInt(temp.slice(2, 4) + temp.slice(0, 2), 16) / 10;
+    }
+
+    let hexValue = ensureBytes(tempTo16Hex(temp), 2);
+
+    return hexValue.slice(2, 4) + hexValue.slice(0, 2);
+}
+
 export function composeMQTTPayload(config) {
     let payload = '';
     let HEADER = 48;
@@ -49,10 +108,10 @@ export function composeMQTTPayload(config) {
 
     switch (action) {
         //”’H’(1Byte)+Dev_Type(0xD0,1Byte)+Dev_ID(8Byte)+’T’(1Byte)
-        case 'DR':
+        case MQTT_ACTION.DR:
             payload = [HEADER, deviceType, MAC, TAIL].join('');
             break;
-        case 'DC':
+        case MQTT_ACTION.DC:
             //”’H’(1Byte)+Dev_Type(0xD0,1Byte)+Dev_ID(8Byte)+YORK_MASTER_CTRL_CMD_TYPEDEF(4Byte)+EXEC_DATE_TYPEDEF(4Byte)+’T’(1Byte 
             payload = [
                 HEADER,
@@ -69,19 +128,20 @@ export function composeMQTTPayload(config) {
                 TAIL
             ].join('');
             break;
-        case 'CFG':
+        case MQTT_ACTION.CFG:
             //”’H’(1Byte)+Dev_Type(0xD0,1Byte)+Dev_ID(8Byte)+YORK_MASTER_CFG_PARAM_TYPEDEF(14Byte)+’T’(1Byte)
             payload = [
                 HEADER,
                 deviceType,
                 MAC,
-                ensureBytes(config[CFG_KEY.SetTemp_Cool_WaterIN], 1),
-                ensureBytes(config[CFG_KEY.SetTemp_Heat_WaterIN], 1),
-                ensureBytes(config[CFG_KEY.SetTemp_Cool_WaterOUT], 1),
-                ensureBytes(config[CFG_KEY.SetTemp_Heat_WaterOUT], 1),
+                temp2Internal(config[CFG_KEY.SetTemp_Cool_WaterIN]),
+                temp2Internal(config[CFG_KEY.SetTemp_Heat_WaterIN]),
+                temp2Internal(config[CFG_KEY.SetTemp_Cool_WaterOUT]),
+                temp2Internal(config[CFG_KEY.SetTemp_Heat_WaterOUT]),
                 ensureBytes(config[CFG_KEY.Heating_WaterCtrl], 1),
-                ensureBytes(config[CFG_KEY.CtrlCycle], 1),
-                ensureBytes(config[CFG_KEY.SetTemp_WaterAction], 1),
+                ensureBytes(config[CFG_KEY.Cooling_WaterCtrl], 1),
+                ensureBytes(config[CFG_KEY.CtrlCycle], 2),
+                temp2Internal(config[CFG_KEY.SetTemp_WaterAction]),
                 TAIL
             ].join('');
             break;
@@ -91,4 +151,87 @@ export function composeMQTTPayload(config) {
     }
 
     return payload;
+}
+
+function parseBitwise(excp, base?) {
+    base = base || 0;
+
+    excp = parseInt(excp.slice(2, 4) + excp.slice(0, 2));
+
+    if (excp === 0) {
+        return [];
+    }
+
+    let matches = [];
+
+    excp.toString(2).replace(/1/g, (match, index) => {
+        matches.push(index + base);
+    });
+
+    return matches;
+}
+
+/**
+ * 一共有7个故障字， 每个故障子占两个字节， 小端存储
+ */
+function exceptionParser(exceptions) {
+    if (!exceptions || exceptions.length != 32) {
+        return console.warn('故障代码长度必须为16字节！');
+    }
+
+    let excp1 = exceptions.slice(0, 4);
+    let excp2 = exceptions.slice(4, 8);
+    let excp3 = exceptions.slice(8, 12);
+    let excp4 = exceptions.slice(12, 16);
+    let excp5 = exceptions.slice(16, 20);
+    let excp6 = exceptions.slice(20, 24);
+    let excp7 = exceptions.slice(24, 28);
+    let excp8 = exceptions.slice(28, 32);
+
+    return [excp1, excp2, excp3, excp4, excp5, excp6, excp7, excp8]
+        .reduce((prev, curr, index) => prev.concat(parseBitwise(curr, index * 16)), [])
+        .map(item => ERRORS[item])
+}
+
+// 48 D0 F0FE6B2F980E0000 01 00 00 0000 00009001F401FA0054
+export function payloadParser(payload) {
+    if (!payload || payload.length !== 48) {
+        return {}
+    }
+
+    let header = payload.slice(0, 2);
+    let type = payload.slice(2, 4);
+    let MAC = payload.slice(4, 20);
+    let powerStatus = payload.slice(20, 22); // 开关
+    /**
+     * 0-制冷、1-制热、2-制冷+快速热水、3-制热+快速热水、4-制冷+普通热水、
+     * 5-制热+普通热水、6-快速热水、7-普通热水、8-水泵循环
+     */
+    let mode = payload.slice(22, 24); //模式
+    let conn = payload.slice(24, 26); // HMI通信状态
+    let tempIn = temp2Internal(payload.slice(26, 30), true);
+    let tempOut = temp2Internal(payload.slice(30, 34), true);
+    let tempEnv = temp2Internal(payload.slice(34, 38), true);
+    /**
+     * bit0-15对应模块1-16，1-故障0-正常
+     */
+    let exception = {
+        module: payload.slice(38, 42),
+        values: exceptionParser(payload.slice(42, 74))
+    };
+    let tail = payload.slice(74, 76);
+
+    return {
+        header,
+        type,
+        MAC,
+        powerStatus,
+        mode,
+        conn,
+        exception,
+        tempIn,
+        tempOut,
+        tempEnv,
+        tail
+    }
 }

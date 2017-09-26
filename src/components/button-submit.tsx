@@ -45,20 +45,20 @@ export default class ButtonSubmit extends Component<any, any> {
             easing: Easing.linear
         }).start();
 
-        setTimeout(() => {
-            this.onGrow();
-        }, 2000);
+        // setTimeout(() => {
+        //     this.onGrow();
+        // }, 2000);
 
-        setTimeout(() => {
-            this.setState({ isLoading: false });
-            this.buttomAnimated.setValue(0);
-            this.growAnimated.setValue(0);
-        }, 5000);
+        // setTimeout(() => {
+        //     this.setState({ isLoading: false });
+        //     this.buttomAnimated.setValue(0);
+        //     this.growAnimated.setValue(0);
+        // }, 5000);
 
         this.props.submit().then(result => {
             this.setState({ isLoading: false });
-            this.buttomAnimated.setValue(0);
-            this.growAnimated.setValue(0);
+            // this.buttomAnimated.setValue(0);
+            // this.growAnimated.setValue(0);
         });
     }
 
