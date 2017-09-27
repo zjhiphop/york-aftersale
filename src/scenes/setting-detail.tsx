@@ -40,7 +40,7 @@ const tempWaterActionRange = [...Array(4).keys()].slice(1).map(item => { return 
 const MAC = 'F0FE6B2F980E0000';
 const TOPIC_DATA = `/MAC/${MAC}/DA`;
 const TOPIC_CTRL = `/MAC/${MAC}/DC`;
-const TOPIC_CFG = `/MAC/${MAC}/DFG`;
+const TOPIC_CFG = `/MAC/${MAC}/CFG`;
 const TOPIC_DR = `/MAC/${MAC}/DR`;
 
 export default class SettingDetailScreen extends React.Component {
@@ -49,6 +49,8 @@ export default class SettingDetailScreen extends React.Component {
         let client = Mqtt.subscribe([
             `/MAC/${MAC}/#`
         ]);
+
+        this.onChange = this.onChange.bind(this);
 
         console.log(this.props);
     }
@@ -158,6 +160,7 @@ export default class SettingDetailScreen extends React.Component {
 
         Mqtt.send(TOPIC_CFG, payload);
     }
+
     render() {
         return (
             <ScrollView>
@@ -168,7 +171,7 @@ export default class SettingDetailScreen extends React.Component {
                         onOk={v => {
                             this.setState({
                                 coldInTemp: v
-                            })
+                            }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
@@ -180,7 +183,7 @@ export default class SettingDetailScreen extends React.Component {
                         onOk={v => {
                             this.setState({
                                 hotInTemp: v
-                            })
+                            }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
@@ -192,7 +195,7 @@ export default class SettingDetailScreen extends React.Component {
                         onOk={v => {
                             this.setState({
                                 coldOutTemp: v
-                            })
+                            }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
@@ -205,7 +208,7 @@ export default class SettingDetailScreen extends React.Component {
                         onOk={v => {
                             this.setState({
                                 hotOutTemp: v
-                            })
+                            }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
@@ -218,7 +221,7 @@ export default class SettingDetailScreen extends React.Component {
                         onOk={v => {
                             this.setState({
                                 coldCtrl: v
-                            })
+                            }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
@@ -230,7 +233,7 @@ export default class SettingDetailScreen extends React.Component {
                         onOk={v => {
                             this.setState({
                                 hotCtrl: v
-                            })
+                            }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
@@ -242,7 +245,7 @@ export default class SettingDetailScreen extends React.Component {
                         onOk={v => {
                             this.setState({
                                 tempWaterAction: v
-                            })
+                            }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
