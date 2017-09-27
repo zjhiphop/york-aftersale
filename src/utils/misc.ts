@@ -57,6 +57,12 @@ export enum EXCP_STATUS {
     OK,
     EXCEPTION
 }
+export function getRandomCharByLen(byteLen = 1) {
+    return '0'.repeat(byteLen * 2)
+        .replace(/0/g, function () {
+            return (0 | Math.random() * 16).toString(16).toUpperCase();
+        })
+}
 
 export function seq(len) {
     return Array.apply(null, { length: len }).map(Function.call, Number);
@@ -190,12 +196,12 @@ function exceptionParser(exceptions) {
 
     return [excp1, excp2, excp3, excp4, excp5, excp6, excp7, excp8]
         .reduce((prev, curr, index) => prev.concat(parseBitwise(curr, index * 16)), [])
-        .map(item => ERRORS[item])
+        .map(item => ERRORS[item] || {})
 }
 
 // 48 D0 F0FE6B2F980E0000 01 00 00 0000 00009001F401FA0054
 export function payloadParser(payload) {
-    if (!payload || payload.length !== 48) {
+    if (!payload || payload.length !== 76) {
         return {}
     }
 

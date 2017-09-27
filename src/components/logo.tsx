@@ -1,5 +1,5 @@
 
-import React, { Component, PropTypes } from 'react';
+import * as React from 'react';
 import {
     StyleSheet,
     View,
@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 
-export default class Logo extends Component {
+export default class Logo extends React.Component {
     render() {
         return (
             <View style={styles.container}>

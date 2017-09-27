@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import * as React from 'react';
 import {
     StyleSheet,
     KeyboardAvoidingView,
@@ -15,13 +15,16 @@ import eyeImg from '../assets/eye.png'
 const DEFAULT_PHONE = '13888888888';
 const DEFAULT_PASS = '22222222';
 
-class LoginForm extends Component<any, any> {
+class LoginForm extends React.Component<any, any> {
     constructor(props) {
         super(props);
 
         this.showPass = this.showPass.bind(this);
         this.onPhoneChange = this.onPhoneChange.bind(this);
 
+    }
+
+    componentWillMount() {
         this.props.onChange({
             phone: DEFAULT_PHONE,
             password: DEFAULT_PASS

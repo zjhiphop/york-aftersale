@@ -1,6 +1,15 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
-import { Card, Picker, WingBlank, WhiteSpace, List, Modal, PickerView, Button } from 'antd-mobile';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import {
+    Card,
+    Picker,
+    WingBlank,
+    WhiteSpace,
+    List,
+    Modal,
+    PickerView,
+    Button
+} from 'antd-mobile';
 import { seq } from '../utils/misc';
 import Mqtt from '../utils/mqtt';
 import { EventRegister } from 'react-native-event-listeners'
@@ -13,6 +22,8 @@ import {
     MQTT_ACTION,
     POWER
 } from '../utils/misc';
+import { NavBarButtonPress } from 'react-navigation';
+import TextStyles from '../style/text';
 
 const Item = List.Item;
 const Brief = Item.Brief;
@@ -39,26 +50,15 @@ export default class SettingDetailScreen extends React.Component {
             `/MAC/${MAC}/#`
         ]);
 
+        console.log(this.props);
+    }
+
+    componentWillMount() {
+
         this.initEvents();
         this.query();
 
-        console.log(this.props);
-
-        this.props['navigator'].setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     }
-
-    static navigatorButtons = {
-        // https://github.com/wix/react-native-navigation/blob/master/docs/adding-buttons-to-the-navigator.md
-        rightButtons: [
-            {
-                title: '初始化', // for a textual button, provide the button title (label)
-                id: 'init', // id for this button, given in onNavigatorEvent(event) to help understand which button was clicked
-                testID: 'e2e_rules', // optional, used to locate this view in end-to-end tests
-                buttonFontSize: 14, // Set font size for the button (can also be used in setButtons function to set different button style programatically)
-                buttonFontWeight: '600', // Set font weight for the button (can also be used in setButtons function to set different button style programatically)
-            }
-        ]
-    };
 
     query() {
         Mqtt.send(TOPIC_DR, composeMQTTPayload({
@@ -67,17 +67,11 @@ export default class SettingDetailScreen extends React.Component {
         }));
     }
 
-    onNavigatorEvent(event) { // this is the onPress handler for the two buttons together
-        if (event.type == 'NavBarButtonPress') { // this is the event type for button presses
-            if (event.id == 'edit') { // this is the same id field from the static navigatorButtons definition
-                window.alert('init button clicked!');
-            }
-        }
-    }
-
     initEvents() {
         EventRegister.on(TOPIC_DATA, payload => {
             console.log('new data read: ', payloadParser(payload));
+            this.setState({ 'status': payloadParser(payload) });
+            console.log(this.state.status);
         });
 
         EventRegister.on(TOPIC_CTRL, payload => {
@@ -88,9 +82,27 @@ export default class SettingDetailScreen extends React.Component {
             console.log('new cfg read: ', payload);
         });
     }
-    static navigationOptions = {
-        title: '温控设置详情'
+
+    static navigationOptions = ({ navigation }) => {
+        const { params } = navigation.state;
+        return {
+            title: "配置详情",
+            headerRight: <Text style={TextStyles.title} onPress={() => params.initSettings()}>初始化</Text>
+        };
     };
+
+    initSettings() {
+        alert('确定要初始化？', '初始化之后会覆盖掉当前温控内部的配置', [
+            { text: '取消', onPress: () => console.log('Canceled.'), style: 'default' },
+            { text: '确定', onPress: () => console.log('ok') }
+        ])
+    }
+
+    componentDidMount() {
+        this.props['navigation'].setParams({ initSettings: this.initSettings });
+    }
+
+
     state = {
         coldInTemp: null,
         coldOutTemp: null,
@@ -148,7 +160,7 @@ export default class SettingDetailScreen extends React.Component {
     }
     render() {
         return (
-            <View>
+            <ScrollView>
                 <WhiteSpace />
                 <List>
                     <Picker extra={this.state.coldInTemp}
@@ -240,29 +252,43 @@ export default class SettingDetailScreen extends React.Component {
                     <Item extra={this.state.ctrlCycle}>
                         温控周期
                     </Item>
-
                 </List>
+                <WhiteSpace />
+
+                <View>
+                    <Item>实时温控状态</Item>
+                    <Item><Text>开关: {this.state.status.powerStatus}</Text></Item>
+                    <Item><Text>HMI通信状态: {this.state.status.conn}</Text></Item>
+                    <Item><Text>入水温度: {this.state.status.tempIn}</Text></Item>
+                    <Item><Text>出水温度: {this.state.status.tempOut}</Text></Item>
+                    <Item><Text>环境温度: {this.state.status.tempEnv}</Text></Item>
+                </View>
 
                 <WhiteSpace />
 
-                <Item multipleLine extra={
-                    <View>
-                        {this.state.status.exception.values.map(item => {
-                            <Text>{item.code} {item.value} {item.desc}</Text>
-                        })}
-                        <Button type="primary" style={{ position: "absolute", height: 50, top: -20, right: 0 }}>清除</Button>
-                    </View>
-                }>故障状态码</Item>
-                <Item multipleLine extra={
-                    <View>
-                        <Text>开关: {this.state.status.powerStatus}</Text>
-                        <Text>HMI通信状态: {this.state.status.conn}</Text>
-                        <Text>入水温度: {this.state.status.tempIn}</Text>
-                        <Text>出水温度: {this.state.status.tempOut}</Text>
-                        <Text>环境温度: {this.state.status.tempEnv}</Text>
-                    </View>
-                }>当前温控状态</Item>
-            </View>
+                <View>
+                    <Item extra={
+                        <View>
+                            <Text style={{
+                                position: "absolute",
+                                right: 0
+                            }}>清除({this.state.status.exception.values.length})</Text></View>
+                    }>
+                        故障状态码
+                        </Item>
+
+                    {this.state.status.exception.values.map(item => {
+                        if (item.code) {
+                            return <Item multipleLine extra={
+                                <Text>{[item.code, item.value, item.desc].join(' ')}</Text>
+                            }></Item>
+                        }
+                        return null;
+                    })}
+                </View>
+
+
+            </ScrollView>
         );
     }
 }

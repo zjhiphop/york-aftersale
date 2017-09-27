@@ -83,15 +83,17 @@ let ERROR_STR = `
 
 export const ERRORS = ERROR_STR.trim()
     .split(/\s+/)
-    .map(errInfo => {
+    .reduce((prev, errInfo) => {
         let data = errInfo.split('|');
 
-        return {
+        prev[data[0]] = {
             code: data[1],
             value: data[0],
             desc: data[2]
         }
-    });
+
+        return prev;
+    }, {});
 
 export const TCP_CONFIG = {
     host: '10.10.100.254',

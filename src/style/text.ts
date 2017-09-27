@@ -7,7 +7,9 @@ const text = StyleSheet.create({
         fontSize: 14
     },
     title: {
-
+        fontSize: 14,
+        color: 'blue',
+        marginRight: 10
     }
 });
 

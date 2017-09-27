@@ -5,7 +5,11 @@ const text = StyleSheet.create({
         fontFamily: 'Open Sans',
         fontSize: 14
     },
-    title: {}
+    title: {
+        fontSize: 14,
+        color: 'blue',
+        marginRight: 10
+    }
 });
 export default text;
 //# sourceMappingURL=text.js.map

@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import * as React from 'react';
 import {
     StyleSheet,
     ImageBackground,
@@ -6,7 +6,7 @@ import {
 
 import bgSrc from '../assets/bg.jpeg';
 
-export default class Wallpaper extends Component {
+export default class Wallpaper extends React.Component {
     render() {
         return (
             <ImageBackground style={styles.picture} source={bgSrc}>

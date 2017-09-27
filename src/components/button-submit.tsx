@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import * as React from 'react';
 import {
     StyleSheet,
     TouchableOpacity,
@@ -18,7 +18,7 @@ const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const MARGIN = 40;
 
-export default class ButtonSubmit extends Component<any, any> {
+export default class ButtonSubmit extends React.Component<any, any> {
     constructor(props) {
         super(props);
 
@@ -39,11 +39,11 @@ export default class ButtonSubmit extends Component<any, any> {
 
         this.setState({ isLoading: true });
 
-        Animated.timing(this.buttomAnimated, {
-            toValue: 1,
-            duration: 200,
-            easing: Easing.linear
-        }).start();
+        // Animated.timing(this.buttomAnimated, {
+        //     toValue: 1,
+        //     duration: 200,
+        //     easing: Easing.linear
+        // }).start();
 
         // setTimeout(() => {
         //     this.onGrow();
@@ -55,11 +55,7 @@ export default class ButtonSubmit extends Component<any, any> {
         //     this.growAnimated.setValue(0);
         // }, 5000);
 
-        this.props.submit().then(result => {
-            this.setState({ isLoading: false });
-            // this.buttomAnimated.setValue(0);
-            // this.growAnimated.setValue(0);
-        });
+        this.props.submit();
     }
 
     onGrow() {
