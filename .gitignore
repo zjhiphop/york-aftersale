@@ -17,7 +17,7 @@ index.ios.js.map
 /src/**/*.js
 /src/**/*.map
 npm-debug.log
-dist
+dist/
 ios/dist
 ios/main.jsbundle
 ios/main.jsbundle.meta

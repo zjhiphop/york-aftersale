@@ -3,7 +3,8 @@ import { ERRORS } from "../constants";
 export enum MQTT_ACTION {
     DR,
     DC,
-    CFG
+    CFG,
+    DRCFG
 }
 
 export enum CTRL_KEY {
@@ -115,7 +116,10 @@ export function composeMQTTPayload(config) {
     switch (action) {
         //”’H’(1Byte)+Dev_Type(0xD0,1Byte)+Dev_ID(8Byte)+’T’(1Byte)
         case MQTT_ACTION.DR:
-            payload = [HEADER, deviceType, MAC, TAIL].join('');
+            payload = [HEADER, deviceType, 'C0', MAC, TAIL].join('');
+            break;
+        case MQTT_ACTION.DRCFG:
+            payload = [HEADER, deviceType, 'C1', MAC, TAIL].join('');
             break;
         case MQTT_ACTION.DC:
             //”’H’(1Byte)+Dev_Type(0xD0,1Byte)+Dev_ID(8Byte)+YORK_MASTER_CTRL_CMD_TYPEDEF(4Byte)+EXEC_DATE_TYPEDEF(4Byte)+’T’(1Byte 
@@ -139,6 +143,7 @@ export function composeMQTTPayload(config) {
             payload = [
                 HEADER,
                 deviceType,
+                'C1',
                 MAC,
                 temp2Internal(config[CFG_KEY.SetTemp_Cool_WaterIN]),
                 temp2Internal(config[CFG_KEY.SetTemp_Heat_WaterIN]),
@@ -201,31 +206,36 @@ function exceptionParser(exceptions) {
 
 // 48 D0 F0FE6B2F980E0000 01 00 00 0000 00009001F401FA0054
 export function payloadParser(payload) {
-    if (!payload || payload.length !== 76) {
-        return {}
+    if (!payload || payload.length !== 78) {
+        return {
+            exception: {
+                values: []
+            }
+        }
     }
 
     let header = payload.slice(0, 2);
     let type = payload.slice(2, 4);
-    let MAC = payload.slice(4, 20);
-    let powerStatus = payload.slice(20, 22); // 开关
+    let actionType = payload.slice(4, 6);
+    let MAC = payload.slice(6, 22);
+    let powerStatus = payload.slice(22, 24); // 开关
     /**
      * 0-制冷、1-制热、2-制冷+快速热水、3-制热+快速热水、4-制冷+普通热水、
      * 5-制热+普通热水、6-快速热水、7-普通热水、8-水泵循环
      */
-    let mode = payload.slice(22, 24); //模式
-    let conn = payload.slice(24, 26); // HMI通信状态
-    let tempIn = temp2Internal(payload.slice(26, 30), true);
-    let tempOut = temp2Internal(payload.slice(30, 34), true);
-    let tempEnv = temp2Internal(payload.slice(34, 38), true);
+    let mode = payload.slice(24, 26); //模式
+    let conn = payload.slice(26, 28); // HMI通信状态
+    let tempIn = temp2Internal(payload.slice(28, 32), true);
+    let tempOut = temp2Internal(payload.slice(32, 36), true);
+    let tempEnv = temp2Internal(payload.slice(38, 40), true);
     /**
      * bit0-15对应模块1-16，1-故障0-正常
      */
     let exception = {
-        module: payload.slice(38, 42),
-        values: exceptionParser(payload.slice(42, 74))
+        module: payload.slice(40, 44),
+        values: exceptionParser(payload.slice(44, 76))
     };
-    let tail = payload.slice(74, 76);
+    let tail = payload.slice(76, 78);
 
     return {
         header,

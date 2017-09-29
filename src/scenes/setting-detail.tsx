@@ -63,8 +63,15 @@ export default class SettingDetailScreen extends React.Component {
     }
 
     query() {
+        // 查询状态信息
         Mqtt.send(TOPIC_DR, composeMQTTPayload({
             action: MQTT_ACTION.DR,
+            MAC: MAC
+        }));
+
+        // 查询配置信息
+        Mqtt.send(TOPIC_DR, composeMQTTPayload({
+            action: MQTT_ACTION.DRCFG,
             MAC: MAC
         }));
     }

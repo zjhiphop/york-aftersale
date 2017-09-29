@@ -47,7 +47,7 @@ class Mqtt {
         });
 
         this.client.on('messageReceived', (message: Paho.MQTT.Message) => {
-            console.log(message.payloadString);
+            console.log(message);
             let topic = message.destinationName,
                 payload = message.payloadString || message.payloadBytes;
 

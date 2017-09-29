@@ -7,13 +7,12 @@ import {
     TouchableOpacity,
     Image, TextInput
 } from 'react-native';
-import { createForm } from 'rc-form';
 
 import { List, InputItem, WhiteSpace, Toast } from 'antd-mobile';
 import eyeImg from '../assets/eye.png'
 
 const DEFAULT_PHONE = '13888888888';
-const DEFAULT_PASS = '22222222';
+const DEFAULT_PASS = '11111111';
 
 class LoginForm extends React.Component<any, any> {
     constructor(props) {
@@ -33,7 +32,9 @@ class LoginForm extends React.Component<any, any> {
 
     state = {
         showPass: false,
-        hasError: false
+        hasError: false,
+        phone: DEFAULT_PHONE,
+        password: DEFAULT_PASS
     }
 
     showPass() {
@@ -63,7 +64,6 @@ class LoginForm extends React.Component<any, any> {
     }
 
     render() {
-        const { getFieldProps } = this.props['form'];
 
         return (
             <KeyboardAvoidingView behavior='padding'
@@ -75,13 +75,13 @@ class LoginForm extends React.Component<any, any> {
                     onErrorClick={this.onErrorClick}
                     placeholder="138 8888 8888"
                     maxLength={11}
-                    value={DEFAULT_PHONE}
+                    value={this.state.phone}
                     onChange={this.onPhoneChange}
                 >手机号码</InputItem>
                 <InputItem
                     style={styles.input}
                     type={this.state.showPass ? 'text' : 'password'}
-                    value={DEFAULT_PASS}
+                    value={this.state.password}
                     onChange={value => {
                         this.props.onChange({ password: value })
                     }}
@@ -120,4 +120,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default createForm()(LoginForm);
+export default LoginForm;

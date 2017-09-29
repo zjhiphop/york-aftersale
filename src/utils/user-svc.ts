@@ -23,6 +23,8 @@ let UserSvc = {
             API.updateToken(res.token);
             user = res.user;
 
+            console.log(user);
+
             return res;
         })
     },
