@@ -5,12 +5,16 @@ import Wallpaper from '../components/wallpaper';
 import ButtonSubmit from '../components/button-submit';
 import UserSvc from '../utils/user-svc';
 import { NavigationActions } from 'react-navigation';
+import SplashScreen from 'react-native-splash-screen';
 
 export default class LoginScreen extends Component<any, any> {
     constructor(props) {
         super(props);
-
         this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    componentDidMount() {
+        SplashScreen.hide();
     }
     state = {
         phone: '',

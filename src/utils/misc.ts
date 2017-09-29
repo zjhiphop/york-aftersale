@@ -156,7 +156,7 @@ export function composeMQTTPayload(config) {
 
     }
 
-    return payload;
+    return payload.toUpperCase();
 }
 
 function parseBitwise(excp, base?) {

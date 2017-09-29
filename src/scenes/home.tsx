@@ -4,6 +4,7 @@ import { Grid, WhiteSpace } from 'antd-mobile';
 import { StackNavigator } from 'react-navigation';
 import layouts from '../style/layout';
 import Logo from '../components/logo';
+import SplashScreen from 'react-native-splash-screen';
 
 const menus = [{
     'icon': 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png',
@@ -24,6 +25,9 @@ const menus = [{
 }];
 
 export default class HomeScreen extends React.Component {
+    componentDidMount() {
+        SplashScreen.hide();
+    }
     static navigationOptions = {
         title: '主页',
     };
