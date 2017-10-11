@@ -109,11 +109,12 @@ const styles = StyleSheet.create({
         top: 0,
         alignItems: 'center',
         justifyContent: 'flex-start',
+        color: 'white'
     },
     button: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#F035E0',
+        backgroundColor: 'rgba(0,0,255, .8)',
         height: MARGIN,
         borderRadius: 20,
         zIndex: 100,
