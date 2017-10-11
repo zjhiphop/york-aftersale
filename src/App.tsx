@@ -9,6 +9,7 @@ import RequestScreen from './scenes/request';
 import SettingScreen from './scenes/settings';
 import SettingDetailScreen from './scenes/setting-detail';
 import ResetPassScreen from './scenes/resetpass';
+import OrderDetailScreen from './scenes/order-detail';
 
 const MainNav = StackNavigator({
     Home: { screen: HomeScreen },
@@ -17,7 +18,8 @@ const MainNav = StackNavigator({
     Request: { screen: RequestScreen },
     Finished: { screen: FinishedScreen },
     SettingDetail: { screen: SettingDetailScreen },
-    ResetPass: { screen: ResetPassScreen }
+    ResetPass: { screen: ResetPassScreen },
+    OrderDetail: { screen: OrderDetailScreen }
 });
 
 const App = StackNavigator({

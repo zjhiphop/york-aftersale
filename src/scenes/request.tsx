@@ -48,7 +48,16 @@ export default class RequestScreen extends React.Component {
                 customerAddress: '无锡市南长区XXX',
                 createAt: '2017-09-22 15:20:30',
                 endDate: '2017-10-10 12:20:30',
-                _id: 1
+                _id: 1,
+                orderHistory: [{
+                    title: '配置',
+                    operation: '[管理员] 创建订单',
+                    createAt: '2017-10-11 12:20:30'
+                }, {
+                    title: '备注',
+                    operation: '[我] 配置了XX参数',
+                    createAt: '2017-10-10 13:10:30'
+                }]
             },
             {
                 title: '杨思',
@@ -124,7 +133,7 @@ export default class RequestScreen extends React.Component {
         const { navigate } = this.props['navigation'];
         return <View
             onTouchStart={e => {
-                navigate('SettingDetail', { data: data });
+                navigate('OrderDetail', { data: data });
             }}>
             <Card>
                 <Card.Header
