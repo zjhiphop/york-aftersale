@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Card, WingBlank, WhiteSpace, Toast, Button, ActionSheet } from 'antd-mobile';
+import {
+    Card, WingBlank, WhiteSpace,
+    Toast, Button, ActionSheet,
+    Badge
+} from 'antd-mobile';
+
 import call from 'react-native-phone-call';
 import OrderSvc from '../utils/order-svc';
 import { MAPS_TYPE, MapSvc } from '../utils/map-svc';
-
+import moment from 'moment';
 export default class RequestScreen extends React.Component {
     constructor(props) {
         super(props);
@@ -42,6 +47,7 @@ export default class RequestScreen extends React.Component {
                 detail: '水泵故障',
                 customerAddress: '无锡市南长区XXX',
                 createAt: '2017-09-22 15:20:30',
+                endDate: '2017-10-10 12:20:30',
                 _id: 1
             },
             {
@@ -50,6 +56,7 @@ export default class RequestScreen extends React.Component {
                 detail: '水泵故障',
                 customerAddress: '无锡市南长区XXX',
                 createAt: '2017-09-22 15:20:30',
+                endDate: '2017-10-14 15:00:30',
                 _id: 2
             },
             {
@@ -58,9 +65,14 @@ export default class RequestScreen extends React.Component {
                 detail: '水泵故障',
                 customerAddress: '无锡市南长区XXX',
                 createAt: '2017-09-22 15:20:30',
+                endDate: '2017-10-15 23:20:30',
                 _id: 3
             }
         ]
+    }
+
+    isExpired(dateString) {
+        return moment().toDate() > new Date(dateString);
     }
 
     render() {
@@ -104,7 +116,9 @@ export default class RequestScreen extends React.Component {
                 }
             });
     }
-
+    _renderBadge(date) {
+        return this.isExpired(date) ? <Badge text="已过期" style={styles.badge}></Badge> : <Text></Text>;
+    }
     _renderCard(data) {
 
         const { navigate } = this.props['navigation'];
@@ -133,16 +147,18 @@ export default class RequestScreen extends React.Component {
                 <Card.Body>
                     <View style={styles.body}>
                         <Text style={styles.detail}> {data.detail} </Text>
+                        {this._renderBadge(data.endDate)}
                         <View onTouchStart={e => {
                             e.stopPropagation();
                             this.showMapAction(data.customerAddress);
                         }}><Text style={styles.address}> 住址：{data.customerAddress}</Text></View>
                     </View>
                 </Card.Body>
-                <Card.Footer content={<Text style={styles.footerTitle}>{data.createAt}</Text>} extra={<View onTouchStart={e => {
-                    e.stopPropagation();
-                    this.setDone(data._id);
-                }}><Text style={styles.button} >维修完毕</Text></View>} />
+                <Card.Footer content={<Text style={styles.footerTitle}>{'截止时间：' + data.endDate.split(' ')[0]}</Text>} extra={
+                    <View onTouchStart={e => {
+                        e.stopPropagation();
+                        this.setDone(data._id);
+                    }}><Text style={styles.button} >维修完毕</Text></View>} />
             </Card>
             <WhiteSpace size="lg" />
         </View>
@@ -157,13 +173,19 @@ const styles = StyleSheet.create({
         color: 'grey'
     },
     body: {
-        padding: 10
+        margin: 10
+    },
+    badge: {
+        position: 'absolute',
+        right: 25,
+        top: 10,
+        borderRadius: 2
     },
     footerTitle: {
         position: 'absolute',
         left: 0,
         bottom: 0,
-        color: 'grey'
+        color: 'rgba(0, 0, 200, .8)'
     },
     button: {
         position: 'absolute',
