@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Card, WingBlank, WhiteSpace, Toast, Button } from 'antd-mobile';
+import { Card, WingBlank, WhiteSpace, Toast, Button, ActionSheet } from 'antd-mobile';
 import call from 'react-native-phone-call';
 import OrderSvc from '../utils/order-svc';
+import { MAPS_TYPE, MapSvc } from '../utils/map-svc';
 
 export default class RequestScreen extends React.Component {
     constructor(props) {
@@ -14,12 +15,26 @@ export default class RequestScreen extends React.Component {
         //         'list': res.list || []
         //     });
         // })
+
+        MapSvc.getMapTypes().then(res => {
+            this.setState({
+                mapTypes: res
+            })
+        });
+
+        MapSvc.getLocation().then(res => {
+            this.setState({
+                currLocation: res
+            })
+        })
     }
     static navigationOptions = {
         title: '待维修单'
     };
 
     state = {
+        currLocation: {},
+        mapTypes: [],
         list: [
             {
                 title: '王晓二',
@@ -73,38 +88,66 @@ export default class RequestScreen extends React.Component {
         });
     }
 
+    showMapAction(message) {
+        let BUTTONS = this.state.mapTypes.map(item => item.name).concat(['取消']);
+
+        ActionSheet.showActionSheetWithOptions({
+            options: BUTTONS,
+            cancelButtonIndex: BUTTONS.length - 1,
+            title: '请选择地图打开',
+            message: message,
+            maskClosable: true
+        },
+            (buttonIndex) => {
+                if (this.state.mapTypes[buttonIndex]) {
+                    MapSvc.openNav(this.state.mapTypes[buttonIndex], message);
+                }
+            });
+    }
+
     _renderCard(data) {
-        return <View>
+
+        const { navigate } = this.props['navigation'];
+        return <View
+            onTouchStart={e => {
+                navigate('SettingDetail', { data: data });
+            }}>
             <Card>
                 <Card.Header
                     title={data.title}
-                    extra={<Text style={styles.title} onPress={e => {
+                    extra={
+                        <View
+                            onTouchStart={e => {
+                                e.stopPropagation();
+                                const args = {
+                                    number: data.customerPhone, // String value with the number to call
+                                    prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
+                                }
 
-                        const args = {
-                            number: data.customerPhone, // String value with the number to call
-                            prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
-                        }
-
-                        call(args).catch(console.error)
-
-                    }} >{data.customerPhone}</Text>}
+                                call(args).catch(console.error)
+                            }}>
+                            <Text style={styles.title}
+                            >{data.customerPhone}</Text>
+                        </View>}
                 />
                 <Card.Body>
                     <View style={styles.body}>
-                        <Text> {data.detail} </Text>
-                        <Text> 住址：{data.customerAddress}</Text>
+                        <Text style={styles.detail}> {data.detail} </Text>
+                        <View onTouchStart={e => {
+                            e.stopPropagation();
+                            this.showMapAction(data.customerAddress);
+                        }}><Text style={styles.address}> 住址：{data.customerAddress}</Text></View>
                     </View>
                 </Card.Body>
-                <Card.Footer content={<Text style={styles.footerTitle}>{data.createAt}</Text>} extra={<Text style={styles.button} onPress={e => {
+                <Card.Footer content={<Text style={styles.footerTitle}>{data.createAt}</Text>} extra={<View onTouchStart={e => {
+                    e.stopPropagation();
                     this.setDone(data._id);
-                }}>立即处理</Text>} />
+                }}><Text style={styles.button} >维修完毕</Text></View>} />
             </Card>
             <WhiteSpace size="lg" />
         </View>
     }
 };
-
-
 
 const styles = StyleSheet.create({
     title: {
@@ -128,5 +171,13 @@ const styles = StyleSheet.create({
         right: 10,
         fontSize: 18,
         color: 'blue'
+    },
+    detail: {
+        color: '#333'
+    },
+    address: {
+        color: '#999',
+        marginTop: 10,
+        marginBottom: 10
     }
 })

@@ -8,8 +8,9 @@ import {
     List,
     Modal,
     PickerView,
-    Button
+    Button, Popover, Icon
 } from 'antd-mobile';
+const PItem = Popover.Item;
 import { seq } from '../utils/misc';
 import Mqtt from '../utils/mqtt';
 import { EventRegister } from 'react-native-event-listeners'
@@ -42,6 +43,7 @@ const TOPIC_DATA = `/MAC/${MAC}/DA`;
 const TOPIC_CTRL = `/MAC/${MAC}/DC`;
 const TOPIC_CFG = `/MAC/${MAC}/CFG`;
 const TOPIC_DR = `/MAC/${MAC}/DR`;
+const customIcon = src => <img src={src} className="am-icon am-icon-xs" alt="icon" />;
 
 export default class SettingDetailScreen extends React.Component {
     constructor(props) {
@@ -94,9 +96,45 @@ export default class SettingDetailScreen extends React.Component {
 
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
+
         return {
             title: "配置详情",
-            headerRight: <Text style={TextStyles.title} onPress={() => params.initSettings()}>初始化</Text>
+            headerRight: <View>
+                <Popover
+                    overlayStyle={{
+                        color: 'currentColor',
+                        top: 30
+                    }}
+                    overlay={[
+                        (<PItem
+                            key="5"
+                            value="special"
+                            onPress={() => params.initSettings()}
+                            style={{ whiteSpace: 'nowrap' }}>
+                            <Text>初始化</Text>
+                        </PItem>),
+                        (<PItem key="4" value="scan">
+                            <Text>维修完成</Text>
+                        </PItem>),
+                        (<PItem key="6" value="">
+                            <Text style={{ marginRight: 5 }}>帮助</Text>
+                        </PItem>)
+                    ]}
+                    onSelect={(e) => params.onSelect(e)}
+                >
+                    <View style={{
+                        height: '100%',
+                        padding: 15,
+                        marginRight: 15,
+                        display: 'flex',
+                        alignItems: 'center',
+                    }}
+                    >
+                        <Icon type="ellipsis" />
+                    </View>
+
+                </Popover>
+            </View>
         };
     };
 
@@ -107,8 +145,15 @@ export default class SettingDetailScreen extends React.Component {
         ])
     }
 
+    onSelect(action) {
+        window.alert('selected ' + action);
+    }
+
     componentDidMount() {
-        this.props['navigation'].setParams({ initSettings: this.initSettings });
+        this.props['navigation'].setParams({
+            initSettings: this.initSettings.bind(this),
+            onSelect: this.onSelect.bind(this)
+        });
     }
 
 
@@ -132,7 +177,8 @@ export default class SettingDetailScreen extends React.Component {
         },
         config: {
 
-        }
+        },
+        visible: false
     }
     onChange() {
         // ctrl gate

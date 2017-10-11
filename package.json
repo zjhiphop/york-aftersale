@@ -60,6 +60,7 @@
     "react-native": "^0.47.0",
     "react-native-event-listeners": "^1.0.3",
     "react-native-level-fs": "^3.0.0",
+    "react-native-open-navi": "^1.0.0",
     "react-native-paho-mqtt": "^0.1.1",
     "react-native-phone-call": "^1.0.4",
     "react-native-splash-screen": "^3.0.1",

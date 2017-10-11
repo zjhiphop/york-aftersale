@@ -13,6 +13,8 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* aftersaleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* aftersaleTests.m */; };
+		03EAFC0725CC4EF591832DFD /* libRNThirdNavigationManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54A3AC86504C5FA7903E47 /* libRNThirdNavigationManager.a */; };
+		07AD6D301F8B5C7F00B3E6C7 /* anticon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 07AD6D2F1F8B5C7800B3E6C7 /* anticon.ttf */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
@@ -82,6 +84,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = aftersale;
+		};
+		070ACA401F8DE276002B2A17 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DBD96932F9AC4780B168F289 /* RNThirdNavigationManager.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 91FAD8FD1BD8DBFD0055C6C9;
+			remoteInfo = RNThirdNavigationManager;
 		};
 		075E2D031F724215008A2505 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -284,6 +293,7 @@
 		00E356EE1AD99517003FC87E /* aftersaleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = aftersaleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* aftersaleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = aftersaleTests.m; sourceTree = "<group>"; };
+		07AD6D2F1F8B5C7800B3E6C7 /* anticon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = anticon.ttf; sourceTree = "<group>"; };
 		0AB1D742B93644A6AC3608AD /* libSplashScreen.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSplashScreen.a; sourceTree = "<group>"; };
 		12F5AC2094964AB49E02E38F /* libTcpSockets.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libTcpSockets.a; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
@@ -298,10 +308,12 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* aftersale-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "aftersale-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* aftersale-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "aftersale-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A54A3AC86504C5FA7903E47 /* libRNThirdNavigationManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNThirdNavigationManager.a; sourceTree = "<group>"; };
 		55B7B7FF5B45409EB275C69C /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SplashScreen.xcodeproj; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		DBD96932F9AC4780B168F289 /* RNThirdNavigationManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNThirdNavigationManager.xcodeproj; path = "../node_modules/react-native-open-navi/ios/RNThirdNavigationManager.xcodeproj"; sourceTree = "<group>"; };
 		EE14514396D14B92AF1487DA /* TcpSockets.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = TcpSockets.xcodeproj; path = "../node_modules/react-native-tcp/ios/TcpSockets.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -331,6 +343,7 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				54FEB9D6AFED4E4D8BB17BFE /* libTcpSockets.a in Frameworks */,
 				F76D8773186B403C88C23B62 /* libSplashScreen.a in Frameworks */,
+				03EAFC0725CC4EF591832DFD /* libRNThirdNavigationManager.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +431,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		070ACA3D1F8DE276002B2A17 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				070ACA411F8DE276002B2A17 /* libRNThirdNavigationManager.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		075E2D211F72591D008A2505 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -426,11 +447,20 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		07AD6D2C1F8B593200B3E6C7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				07AD6D2F1F8B5C7800B3E6C7 /* anticon.ttf */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		07C54E321F7D5606003FB9D8 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
 				12F5AC2094964AB49E02E38F /* libTcpSockets.a */,
 				0AB1D742B93644A6AC3608AD /* libSplashScreen.a */,
+				3A54A3AC86504C5FA7903E47 /* libRNThirdNavigationManager.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -528,6 +558,7 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				EE14514396D14B92AF1487DA /* TcpSockets.xcodeproj */,
 				55B7B7FF5B45409EB275C69C /* SplashScreen.xcodeproj */,
+				DBD96932F9AC4780B168F289 /* RNThirdNavigationManager.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -544,6 +575,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				07AD6D2C1F8B593200B3E6C7 /* Resources */,
 				13B07FAE1A68108700A75B9A /* aftersale */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* aftersaleTests */,
@@ -725,6 +757,10 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = 070ACA3D1F8DE276002B2A17 /* Products */;
+					ProjectRef = DBD96932F9AC4780B168F289 /* RNThirdNavigationManager.xcodeproj */;
+				},
+				{
 					ProductGroup = 07C54E7C1F7DEC16003FB9D8 /* Products */;
 					ProjectRef = 55B7B7FF5B45409EB275C69C /* SplashScreen.xcodeproj */;
 				},
@@ -777,6 +813,13 @@
 			fileType = archive.ar;
 			path = libRCTVibration.a;
 			remoteRef = 00C302E31ABCB9EE00DB3ED1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		070ACA411F8DE276002B2A17 /* libRNThirdNavigationManager.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNThirdNavigationManager.a;
+			remoteRef = 070ACA401F8DE276002B2A17 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		075E2D041F724215008A2505 /* libthird-party.a */ = {
@@ -975,6 +1018,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07AD6D301F8B5C7F00B3E6C7 /* anticon.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
@@ -1103,12 +1147,14 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-open-navi/ios/RNThirdNavigationManager",
 				);
 				INFOPLIST_FILE = aftersaleTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1130,12 +1176,14 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-open-navi/ios/RNThirdNavigationManager",
 				);
 				INFOPLIST_FILE = aftersaleTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1160,6 +1208,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-open-navi/ios/RNThirdNavigationManager",
 				);
 				INFOPLIST_FILE = aftersale/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1187,6 +1236,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-open-navi/ios/RNThirdNavigationManager",
 				);
 				INFOPLIST_FILE = aftersale/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1219,11 +1269,13 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-open-navi/ios/RNThirdNavigationManager",
 				);
 				INFOPLIST_FILE = "aftersale-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1255,11 +1307,13 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-open-navi/ios/RNThirdNavigationManager",
 				);
 				INFOPLIST_FILE = "aftersale-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1292,6 +1346,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.aftersale-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1316,6 +1371,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
