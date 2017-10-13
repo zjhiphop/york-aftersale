@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import {
     Card, WingBlank, WhiteSpace,
     Toast, Button, ActionSheet,
-    Badge
+    Badge, InputItem, TextareaItem
 } from 'antd-mobile';
 
 import call from 'react-native-phone-call';
@@ -87,6 +87,21 @@ export default class OrderDetailScreen extends React.Component {
                     />
                     <WhiteSpace size="lg" />
                 </WingBlank>
+
+                <Text style={styles.title}>配置</Text>
+                <WhiteSpace size="lg" />
+                <TextareaItem
+                    placeholder="用户手机号"
+                    onChange={value => {
+
+                    }}
+                ></TextareaItem>
+                <TextareaItem
+                    placeholder="备注"
+                    onChange={value => {
+
+                    }}
+                ></TextareaItem>
             </ScrollView>
             <View style={{ height: 50, bottom: 0 }}>
                 <Button type="primary" onClick={e => {
