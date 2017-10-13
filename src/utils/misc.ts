@@ -7,6 +7,11 @@ export enum MQTT_ACTION {
     DRCFG
 }
 
+export const ACTION_TYPE = {
+    STATUS: 'C0',
+    CONFIG: 'C1'
+}
+
 export enum CTRL_KEY {
     PowerSet,
     OperationalMode,
@@ -116,10 +121,10 @@ export function composeMQTTPayload(config) {
     switch (action) {
         //”’H’(1Byte)+Dev_Type(0xD0,1Byte)+Dev_ID(8Byte)+’T’(1Byte)
         case MQTT_ACTION.DR:
-            payload = [HEADER, deviceType, 'C0', MAC, TAIL].join('');
+            payload = [HEADER, deviceType, ACTION_TYPE.STATUS, MAC, TAIL].join('');
             break;
         case MQTT_ACTION.DRCFG:
-            payload = [HEADER, deviceType, 'C1', MAC, TAIL].join('');
+            payload = [HEADER, deviceType, ACTION_TYPE.CONFIG, MAC, TAIL].join('');
             break;
         case MQTT_ACTION.DC:
             //”’H’(1Byte)+Dev_Type(0xD0,1Byte)+Dev_ID(8Byte)+YORK_MASTER_CTRL_CMD_TYPEDEF(4Byte)+EXEC_DATE_TYPEDEF(4Byte)+’T’(1Byte 
@@ -143,7 +148,6 @@ export function composeMQTTPayload(config) {
             payload = [
                 HEADER,
                 deviceType,
-                'C1',
                 MAC,
                 temp2Internal(config[CFG_KEY.SetTemp_Cool_WaterIN]),
                 temp2Internal(config[CFG_KEY.SetTemp_Heat_WaterIN]),
@@ -204,8 +208,7 @@ function exceptionParser(exceptions) {
         .map(item => ERRORS[item] || {})
 }
 
-// 48 D0 F0FE6B2F980E0000 01 00 00 0000 00009001F401FA0054
-export function payloadParser(payload) {
+function parseStatus(payload) {
     if (!payload || payload.length !== 78) {
         return {
             exception: {
@@ -216,7 +219,6 @@ export function payloadParser(payload) {
 
     let header = payload.slice(0, 2);
     let type = payload.slice(2, 4);
-    let actionType = payload.slice(4, 6);
     let MAC = payload.slice(6, 22);
     let powerStatus = payload.slice(22, 24); // 开关
     /**
@@ -250,4 +252,63 @@ export function payloadParser(payload) {
         tempEnv,
         tail
     }
+}
+
+// 48 D0 C1 F0FE6B2F980E0000 0000 0000 0000 0000 00 00 00 00 0000 0000 54
+/**
+ * 
+ * @param payload 
+ * 
+ */
+function parseConfig(payload) {
+    if (!payload || payload.length != 56) {
+        return {}
+    }
+
+    let header = payload.slice(0, 2);
+    let type = payload.slice(2, 4);
+    let MAC = payload.slice(6, 22);
+    let coolTempIn = payload.slice(22, 26);
+    let hotTempIn = payload.slice(26, 30);
+    let coolTempOut = payload.slice(30, 34);
+    let hotTempOut = payload.slice(34, 38);
+    let silentMode = payload.slice(38, 40);
+    let faultReset = payload.slice(40, 42);
+    let coolCtrl = payload.slice(42, 44);
+    let hotCtrl = payload.slice(44, 46);
+    let ctrlCycle = payload.slice(46, 50);
+    let setAction = payload.slice(50, 54);
+    let tail = payload.slice(54, 56);
+
+    return {
+        type: type,
+        config: {
+            coldInTemp: temp2Internal(coolTempIn, true),
+            coldOutTemp: temp2Internal(coolTempOut, true),
+            hotInTemp: temp2Internal(hotTempIn, true),
+            hotOutTemp: temp2Internal(hotTempOut, true),
+            coldCtrl: parseInt(coolCtrl, 16),
+            hotCtrl: parseInt(hotCtrl, 16),
+            tempWaterAction: parseInt(setAction, 16)
+        }
+    }
+}
+
+// 48 D0 F0FE6B2F980E0000 01 00 00 0000 00009001F401FA0054
+export function payloadParser(payload) {
+    let actionType = payload.slice(4, 6);
+    let result;
+
+    switch (actionType) {
+        case ACTION_TYPE.STATUS:
+            result = parseStatus(payload);
+            break;
+        case ACTION_TYPE.CONFIG:
+            result = parseConfig(payload);
+            break;
+    }
+
+    result.actionType = actionType;
+
+    return result;
 }

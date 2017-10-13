@@ -21,10 +21,11 @@ import {
     TIME_KEY,
     payloadParser,
     MQTT_ACTION,
-    POWER
+    POWER, ACTION_TYPE
 } from '../utils/misc';
 import { NavBarButtonPress } from 'react-navigation';
 import TextStyles from '../style/text';
+import OrderSvc from '../utils/order-svc';
 
 const Item = List.Item;
 const Brief = Item.Brief;
@@ -54,8 +55,13 @@ export default class SettingDetailScreen extends React.Component {
 
         this.onChange = this.onChange.bind(this);
 
+        const { state } = this.props['navigation'];
+
+        console.log(this._data = state.params.data);
         console.log(this.props);
     }
+
+    _data: { id: null }
 
     componentWillMount() {
 
@@ -80,8 +86,18 @@ export default class SettingDetailScreen extends React.Component {
 
     initEvents() {
         EventRegister.on(TOPIC_DATA, payload => {
-            console.log('new data read: ', payloadParser(payload));
-            this.setState({ 'status': payloadParser(payload) });
+            let status = payloadParser(payload);
+
+            if (status.actionType === ACTION_TYPE.STATUS) {
+                this.setState({ 'status': status });
+            } else if (status.actionType === ACTION_TYPE.CONFIG) {
+
+                Object.keys(status.config).forEach(key => {
+                    console.log(key, status.config[key])
+                    this.setState({ [key]: status.config[key] })
+                });
+            }
+
             console.log(this.state.status);
         });
 
@@ -108,15 +124,15 @@ export default class SettingDetailScreen extends React.Component {
                     overlay={[
                         (<PItem
                             key="5"
-                            value="special"
+                            value="init"
                             onPress={() => params.initSettings()}
                             style={{ whiteSpace: 'nowrap' }}>
                             <Text>初始化</Text>
                         </PItem>),
-                        (<PItem key="4" value="scan">
+                        (<PItem key="4" value="save">
                             <Text>维修完成</Text>
                         </PItem>),
-                        (<PItem key="6" value="">
+                        (<PItem key="6" value="help">
                             <Text style={{ marginRight: 5 }}>帮助</Text>
                         </PItem>)
                     ]}
@@ -141,12 +157,31 @@ export default class SettingDetailScreen extends React.Component {
     initSettings() {
         alert('确定要初始化？', '初始化之后会覆盖掉当前温控内部的配置', [
             { text: '取消', onPress: () => console.log('Canceled.'), style: 'default' },
-            { text: '确定', onPress: () => console.log('ok') }
+            {
+                text: '确定', onPress: () => {
+                    console.log('ok')
+                    this.setState({
+                        coldInTemp: 15,
+                        coldOutTemp: 30,
+                        hotInTemp: 8,
+                        hotOutTemp: 32,
+                        coldCtrl: 0,
+                        hotCtrl: 1,
+                        tempWaterAction: 2,
+                    });
+                }
+            }
         ])
     }
 
     onSelect(action) {
-        window.alert('selected ' + action);
+        if (action === 'init') {
+            this.initSettings();
+        } else if (action === 'save') {
+            if (this._data.id) {
+                OrderSvc.setDone(this._data.id);
+            }
+        }
     }
 
     componentDidMount() {
@@ -174,9 +209,6 @@ export default class SettingDetailScreen extends React.Component {
             tempIn: '',
             tempOut: '',
             tempEnv: ''
-        },
-        config: {
-
         },
         visible: false
     }
@@ -232,7 +264,7 @@ export default class SettingDetailScreen extends React.Component {
                     </Picker>
 
                     <Picker extra={this.state.hotInTemp}
-                        data={coldInTempRange}
+                        data={hotInTempRange}
                         onOk={v => {
                             this.setState({
                                 hotInTemp: v

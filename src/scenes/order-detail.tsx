@@ -54,6 +54,7 @@ export default class OrderDetailScreen extends React.Component {
     };
 
     render() {
+        const { navigate } = this.props['navigation'];
         return <View style={{ flex: 1 }}>
             <ScrollView>
                 <WhiteSpace size="lg" />
@@ -88,7 +89,9 @@ export default class OrderDetailScreen extends React.Component {
                 </WingBlank>
             </ScrollView>
             <View style={{ height: 50, bottom: 0 }}>
-                <Button type="primary">去配置</Button><WhiteSpace />
+                <Button type="primary" onClick={e => {
+                    navigate('SettingDetail', this.state.data);
+                }}>去配置</Button><WhiteSpace />
             </View>
         </View >
     }
