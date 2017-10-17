@@ -45,8 +45,7 @@ class API {
         }
     }
 
-    async post(path, data?) {
-
+    req(path, data, type) {
         return new Promise<any>(async (resolve, reject) => {
 
             try {
@@ -55,7 +54,7 @@ class API {
                 console.log(this.headers);
 
                 let promise = fetch(this.server + path, {
-                    method: 'POST',
+                    method: type,
                     headers: this.headers,
                     body: JSON.stringify(data)
                 });
@@ -77,6 +76,14 @@ class API {
                 reject(error);
             }
         });
+    }
+
+    async post(path, data?) {
+        return this.req(path, data, 'POST');
+    }
+
+    async put(path, data?) {
+        return this.req(path, data, 'PUT');
     }
 }
 

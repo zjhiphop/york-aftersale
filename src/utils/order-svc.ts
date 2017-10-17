@@ -16,7 +16,7 @@ let OrderSvc = {
         return API.get(PATH.DETAIL + id);
     },
     setDone(id) {
-        return API.post(PATH.DONE.replace('{id}', id));
+        return API.put(PATH.DONE.replace('{id}', id));
     }
 }
 

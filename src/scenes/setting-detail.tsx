@@ -174,13 +174,15 @@ export default class SettingDetailScreen extends React.Component {
     }
 
     onSelect(action) {
+        const { navigate } = this.props['navigation'];
+
         if (action === 'init') {
             this.initSettings();
         } else if (action === 'save') {
             if (this._data._id) {
                 OrderSvc.setDone(this._data._id).then(res => {
                     Toast.info("保存成功！");
-                    this.props['navigation']('Request');
+                    navigate('Request');
                 });
             }
         }
