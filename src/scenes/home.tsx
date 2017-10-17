@@ -13,7 +13,7 @@ import ConfigICON from '../assets/config.png';
 
 const menus = [{
     'icon': FixICON,
-    'text': '待维修',
+    'text': '待处理',
     'screen': 'Request'
 }, {
     'icon': FinishedICON,

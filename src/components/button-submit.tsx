@@ -56,6 +56,10 @@ export default class ButtonSubmit extends React.Component<any, any> {
         // }, 5000);
 
         this.props.submit();
+
+        setTimeout(() => {
+            this.setState({ isLoading: false });
+        }, 2000)
     }
 
     onGrow() {
@@ -90,6 +94,7 @@ export default class ButtonSubmit extends React.Component<any, any> {
                         {this.state.isLoading ?
                             <ActivityIndicator
                                 text="正在登录"
+                                color="white"
                                 animating={true}
                             /> :
                             <Text style={styles.text}>登录</Text>
@@ -108,8 +113,7 @@ const styles = StyleSheet.create({
         flex: 1,
         top: 0,
         alignItems: 'center',
-        justifyContent: 'flex-start',
-        color: 'white'
+        justifyContent: 'flex-start'
     },
     button: {
         alignItems: 'center',
@@ -117,7 +121,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,255, .8)',
         height: MARGIN,
         borderRadius: 20,
-        zIndex: 100,
+        zIndex: 100
     },
     circle: {
         height: MARGIN,

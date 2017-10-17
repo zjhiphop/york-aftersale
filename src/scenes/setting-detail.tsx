@@ -6,7 +6,7 @@ import {
     WingBlank,
     WhiteSpace,
     List,
-    Modal,
+    Modal, Toast,
     PickerView,
     Button, Popover, Icon
 } from 'antd-mobile';
@@ -57,11 +57,11 @@ export default class SettingDetailScreen extends React.Component {
 
         const { state } = this.props['navigation'];
 
-        console.log(this._data = state.params.data);
+        console.log(this._data = state.params);
         console.log(this.props);
     }
 
-    _data: { id: null }
+    _data: { _id: null }
 
     componentWillMount() {
 
@@ -118,7 +118,6 @@ export default class SettingDetailScreen extends React.Component {
             headerRight: <View>
                 <Popover
                     overlayStyle={{
-                        color: 'currentColor',
                         top: 30
                     }}
                     overlay={[
@@ -178,8 +177,11 @@ export default class SettingDetailScreen extends React.Component {
         if (action === 'init') {
             this.initSettings();
         } else if (action === 'save') {
-            if (this._data.id) {
-                OrderSvc.setDone(this._data.id);
+            if (this._data._id) {
+                OrderSvc.setDone(this._data._id).then(res => {
+                    Toast.info("保存成功！");
+                    this.props['navigation']('Request');
+                });
             }
         }
     }
@@ -249,6 +251,28 @@ export default class SettingDetailScreen extends React.Component {
     render() {
         return (
             <ScrollView>
+
+                <View>
+                    <Item extra={
+                        <View>
+                            <Text style={{
+                                position: "absolute",
+                                right: 0
+                            }}>清除({this.state.status.exception.values.length})</Text></View>
+                    }>
+                        故障状态码
+                        </Item>
+
+                    {this.state.status.exception.values.map(item => {
+                        if (item.code) {
+                            return <Item style={styles.item} multipleLine extra={
+                                <Text>{[item.code, item.value, item.desc].join(' ')}</Text>
+                            }></Item>
+                        }
+                        return null;
+                    })}
+                </View>
+
                 <WhiteSpace />
                 <List>
                     <Picker extra={this.state.coldInTemp}
@@ -352,31 +376,13 @@ export default class SettingDetailScreen extends React.Component {
                     <Item><Text>环境温度: {this.state.status.tempEnv}</Text></Item>
                 </View>
 
-                <WhiteSpace />
-
-                <View>
-                    <Item extra={
-                        <View>
-                            <Text style={{
-                                position: "absolute",
-                                right: 0
-                            }}>清除({this.state.status.exception.values.length})</Text></View>
-                    }>
-                        故障状态码
-                        </Item>
-
-                    {this.state.status.exception.values.map(item => {
-                        if (item.code) {
-                            return <Item multipleLine extra={
-                                <Text>{[item.code, item.value, item.desc].join(' ')}</Text>
-                            }></Item>
-                        }
-                        return null;
-                    })}
-                </View>
-
-
             </ScrollView>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    item: {
+        alignItems: 'center'
+    }
+})

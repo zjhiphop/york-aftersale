@@ -11,8 +11,8 @@ import {
 import { List, InputItem, WhiteSpace, Toast } from 'antd-mobile';
 import eyeImg from '../assets/eye.png'
 
-const DEFAULT_PHONE = '13888888888';
-const DEFAULT_PASS = '11111111';
+let DEFAULT_PHONE = '13888888888';
+let DEFAULT_PASS = '22222222';
 
 class LoginForm extends React.Component<any, any> {
     constructor(props) {
@@ -32,9 +32,7 @@ class LoginForm extends React.Component<any, any> {
 
     state = {
         showPass: false,
-        hasError: false,
-        phone: DEFAULT_PHONE,
-        password: DEFAULT_PASS
+        hasError: false
     }
 
     showPass() {
@@ -75,13 +73,13 @@ class LoginForm extends React.Component<any, any> {
                     onErrorClick={this.onErrorClick}
                     placeholder="138 8888 8888"
                     maxLength={11}
-                    value={this.state.phone}
+                    defaultValue={DEFAULT_PHONE}
                     onChange={this.onPhoneChange}
-                >手机号码</InputItem>
+                >手机</InputItem>
                 <InputItem
                     style={styles.input}
                     type={this.state.showPass ? 'text' : 'password'}
-                    value={this.state.password}
+                    defaultValue={DEFAULT_PASS}
                     onChange={value => {
                         this.props.onChange({ password: value })
                     }}

@@ -22,6 +22,18 @@ export default class OrderDetailScreen extends React.Component {
         this.setState({
             data: state.params.data
         })
+
+        MapSvc.getMapTypes().then(res => {
+            this.setState({
+                mapTypes: res
+            })
+        });
+
+        MapSvc.getLocation().then(res => {
+            this.setState({
+                currLocation: res
+            })
+        })
     }
 
     componentDidMount() {
@@ -29,29 +41,62 @@ export default class OrderDetailScreen extends React.Component {
     }
 
     state = {
+        mapTypes: [],
+        currLocation: {},
         data: {
-            title: '王晓二',
-            customerPhone: '13666666666',
-            detail: '水泵故障',
-            customerAddress: '无锡市南长区XXX',
-            createAt: '2017-09-22 15:20:30',
-            endDate: '2017-10-10 12:20:30',
-            _id: 1,
-            orderHistory: [{
-                title: '配置',
-                operation: '[管理员] 创建订单',
-                createAt: '2017-10-11 12:20:30'
-            }, {
-                title: '备注',
-                operation: '[我] 配置了XX参数',
-                createAt: '2017-10-10 13:10:30'
-            }]
+            "title": "空调初始化2",
+            "detail": "将温控初始化，检查制冷制热效果1",
+            "type": 0,
+            "customerName": "顾客",
+            "customerPhone": "123123123",
+            "customerAddress": "无锡市南长区南湖大道789号",
+            "backendNote": "123123",
+            "frontendNote": null,
+            "status": 4,
+            "expectDate": "2017-09-22T01:48:59.045Z",
+            "expireDate": "2017-10-16T07:42:08.215Z",
+            "createAt": "2017-09-22T01:48:59.050Z",
+            "_id": "59c46c0b43d1356d42f3a5fa",
+            "operatorId": "59c3b7dc24a1afdd5913bc9f",
+            "orderHistory": [
+                {
+                    "operation": "订单状态修改为【已确认】",
+                    "createAt": "2017-10-16T08:42:59.676Z",
+                    "_id": "59e471131b96546252e6df1e",
+                    "orderId": "59c46c0b43d1356d42f3a5fa"
+                }
+            ]
         }
     }
 
     static navigationOptions = {
         title: '维修单详情'
     };
+
+    isExpired(dateString) {
+        return moment().toDate() > new Date(dateString);
+    }
+
+    _renderBadge(date) {
+        return this.isExpired(date) ? <Badge text="已过期" style={styles.badge}></Badge> : <Text></Text>;
+    }
+
+    showMapAction(message) {
+        let BUTTONS = this.state.mapTypes.map(item => item.name).concat(['取消']);
+
+        ActionSheet.showActionSheetWithOptions({
+            options: BUTTONS,
+            cancelButtonIndex: BUTTONS.length - 1,
+            title: '请选择地图打开',
+            message: message,
+            maskClosable: true
+        },
+            (buttonIndex) => {
+                if (this.state.mapTypes[buttonIndex]) {
+                    MapSvc.openNav(this.state.mapTypes[buttonIndex], message);
+                }
+            });
+    }
 
     render() {
         const { navigate } = this.props['navigation'];
@@ -65,7 +110,14 @@ export default class OrderDetailScreen extends React.Component {
                         <Card.Header
                             title={this.state.data.title}></Card.Header>
                         <Card.Body>
-
+                            <View style={styles.body}>
+                                <Text style={styles.detail}> {this.state.data.detail} </Text>
+                                {this._renderBadge(this.state.data.expireDate)}
+                                <View onTouchEnd={e => {
+                                    e.stopPropagation();
+                                    this.showMapAction(this.state.data.customerAddress);
+                                }}><Text style={styles.address}> 住址：{this.state.data.customerAddress}</Text></View>
+                            </View>
                         </Card.Body>
                         <Card.Footer></Card.Footer>
                     </Card>
@@ -80,7 +132,7 @@ export default class OrderDetailScreen extends React.Component {
                         data={this.state.data.orderHistory.map(item => {
                             return {
                                 time: item.createAt.split(' ')[1],
-                                title: item.title,
+                                title: item.operation,
                                 description: item.operation
                             }
                         })}
@@ -92,6 +144,7 @@ export default class OrderDetailScreen extends React.Component {
                 <WhiteSpace size="lg" />
                 <TextareaItem
                     placeholder="用户手机号"
+                    defaultValue={this.state.data.customerPhone}
                     onChange={value => {
 
                     }}
@@ -117,5 +170,39 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginLeft: 20,
         fontWeight: 'bold'
+    },
+    footerTitle: {
+        color: 'grey',
+        marginBottom: 10,
+        marginTop: 10
+    },
+    footerBtn: {
+        position: 'absolute',
+        bottom: -90,
+        right: 10
+    },
+    body: {
+        padding: 10
+    },
+    badge: {
+        position: 'absolute',
+        right: 25,
+        top: 10,
+        borderRadius: 2
+    },
+    button: {
+        position: 'absolute',
+        bottom: 0,
+        right: 10,
+        fontSize: 18,
+        color: 'blue'
+    },
+    detail: {
+        color: '#333'
+    },
+    address: {
+        color: '#999',
+        marginTop: 10,
+        marginBottom: 10
     }
 });

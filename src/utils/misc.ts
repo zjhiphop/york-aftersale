@@ -63,6 +63,16 @@ export enum EXCP_STATUS {
     OK,
     EXCEPTION
 }
+
+//["待分配", "已分配", "已接单", "已完成", "已确认", "已关闭"];
+export enum ORDER_STATUS {
+    BEFORE_ASSIGN,
+    ASSIGNED,
+    BEFORE_ACCEPT,
+    COMPLETED,
+    CONFIRMED,
+    CLOSED
+}
 export function getRandomCharByLen(byteLen = 1) {
     return '0'.repeat(byteLen * 2)
         .replace(/0/g, function () {
@@ -229,12 +239,12 @@ function parseStatus(payload) {
     let conn = payload.slice(26, 28); // HMI通信状态
     let tempIn = temp2Internal(payload.slice(28, 32), true);
     let tempOut = temp2Internal(payload.slice(32, 36), true);
-    let tempEnv = temp2Internal(payload.slice(38, 40), true);
+    let tempEnv = temp2Internal(payload.slice(36, 40), true);
     /**
      * bit0-15对应模块1-16，1-故障0-正常
      */
     let exception = {
-        module: payload.slice(40, 44),
+        module: '模块：' + parseInt(payload.slice(42, 44) + payload.slice(40, 42)),
         values: exceptionParser(payload.slice(44, 76))
     };
     let tail = payload.slice(76, 78);

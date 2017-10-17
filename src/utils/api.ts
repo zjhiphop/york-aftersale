@@ -1,6 +1,6 @@
 import { API_CONFIG } from './../constants';
 import { AsyncStorage } from 'react-native';
-
+import { Toast } from 'antd-mobile';
 class API {
     server: string;
     token: string;
@@ -46,25 +46,37 @@ class API {
     }
 
     async post(path, data?) {
-        try {
-            data = data || {};
 
-            console.log(this.headers);
+        return new Promise<any>(async (resolve, reject) => {
 
-            let promise = fetch(this.server + path, {
-                method: 'POST',
-                headers: this.headers,
-                body: JSON.stringify(data)
-            });
+            try {
+                data = data || {};
 
-            promise.catch(this.onFetchError.bind(this));
+                console.log(this.headers);
 
-            let response = await promise;
+                let promise = fetch(this.server + path, {
+                    method: 'POST',
+                    headers: this.headers,
+                    body: JSON.stringify(data)
+                });
 
-            return await response.json();
-        } catch (error) {
-            console.error(error);
-        }
+                promise.catch(this.onFetchError.bind(this));
+
+                let response = await promise;
+                let jsonResult = await response.json();
+
+                if (jsonResult.errMsg) {
+                    reject(jsonResult);
+                    return Toast.info(jsonResult.errMsg);
+                }
+
+                resolve(jsonResult);
+
+            } catch (error) {
+                console.error(error);
+                reject(error);
+            }
+        });
     }
 }
 
