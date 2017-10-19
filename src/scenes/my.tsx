@@ -30,7 +30,7 @@ export default class MyScreen extends React.Component {
                 <List>
                     <List.Item extra={this.state.user.name}>用户名</List.Item>
                     <List.Item arrow="horizontal" onClick={e => {
-                        navigate('ResetPass');
+                        navigate('ResetPass', { name: this.state.user.name });
                     }}>密码修改</List.Item>
                     <List.Item arrow="horizontal" onClick={e => {
                         navigate('History')

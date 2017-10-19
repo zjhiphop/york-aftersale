@@ -36,9 +36,9 @@ export default class AboutScreen extends React.Component {
             <Text style={styles.frag}>
                 行动纲领：完美、没有借口、马上行动、服务至上。
             </Text>
-            <Autolink style={styles.contact} text="直线： (86)0510-66752598"></Autolink>
-            <Autolink style={styles.contact} text="售后： (86)0510-82113087"></Autolink>
-            <Autolink style={styles.contact} text="传真： (86)0510-82106084"></Autolink>
+            <Autolink style={styles.contact} text="直线： 0510-66752598"></Autolink>
+            <Autolink style={styles.contact} text="售后：  0510-82113087 "></Autolink>
+            <Autolink style={styles.contact} text="传真： 0510-82106084"></Autolink>
             <Autolink style={styles.contact} text="邮箱： villa@villacn.com"></Autolink>
         </ScrollView>
     }

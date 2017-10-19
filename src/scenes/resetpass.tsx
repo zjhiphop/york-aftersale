@@ -28,10 +28,13 @@ export default class ResetPassScreen extends React.Component {
     }
 
     render() {
+
+        const { state } = this.props['navigation'];
+
         return (
             <View>
                 <List>
-                    <List.Item extra="Jade">用户名</List.Item>
+                    <List.Item extra={state.params.name}>用户名</List.Item>
                     <InputItem
                         placeholder="输入老密码"
                         onChange={value => {
