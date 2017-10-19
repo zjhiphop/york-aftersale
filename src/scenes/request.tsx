@@ -94,7 +94,7 @@ export default class RequestScreen extends React.Component {
         let index = e.nativeEvent.selectedSegmentIndex;
         let operation = ACTIONS[index].operation;
         let filterField = ACTIONS[index].filterField;
-        let filterValue = ACTIONS[index].filterValue;
+        let filterValue: Date | Number = ACTIONS[index].filterValue;
 
         let list = [];
         switch (operation) {

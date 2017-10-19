@@ -32,7 +32,12 @@ export default class MyScreen extends React.Component {
                     <List.Item arrow="horizontal" onClick={e => {
                         navigate('ResetPass');
                     }}>密码修改</List.Item>
-                    <List.Item arrow="horizontal">关于</List.Item>
+                    <List.Item arrow="horizontal" onClick={e => {
+                        navigate('History')
+                    }}>操作记录</List.Item>
+                    <List.Item arrow="horizontal" onClick={e => {
+                        navigate('About')
+                    }}>关于</List.Item>
                 </List >
                 <WhiteSpace size="xl" />
                 <Button type="primary">退出登录</Button>

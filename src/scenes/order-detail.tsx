@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import {
     Card, WingBlank, WhiteSpace,
     Toast, Button, ActionSheet,
-    Badge, InputItem, TextareaItem
+    Badge, InputItem, TextareaItem,
+    Steps
 } from 'antd-mobile';
 
 import call from 'react-native-phone-call';
@@ -100,6 +101,7 @@ export default class OrderDetailScreen extends React.Component {
     render() {
         const { navigate } = this.props['navigation'];
         return <View style={{ flex: 1 }}>
+
             <ScrollView>
                 <WhiteSpace size="lg" />
                 <Text style={styles.title}>基本信息</Text>

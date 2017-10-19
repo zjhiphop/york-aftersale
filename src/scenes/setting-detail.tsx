@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     pitem: {
-        fontSize: 30,
-        height: 50
+        fontSize: 20,
+        height: 30
     }
 })
