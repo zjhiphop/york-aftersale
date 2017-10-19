@@ -10,11 +10,14 @@ import call from 'react-native-phone-call';
 import OrderSvc from '../utils/order-svc';
 import { MAPS_TYPE, MapSvc } from '../utils/map-svc';
 import moment from 'moment';
+import { ORDER_STATUS } from '../utils/misc';
 
 const ACTIONS = [
+    { filterName: '所有单', operation: null, filterValue: null, filterField: null },
     { filterName: '新装单', filterField: 'type', filterValue: 0, operation: 'eq' },
     { filterName: '维修单', filterField: 'type', filterValue: 1, operation: 'eq' },
-    { filterName: '过期单', filterField: 'expireDate', filterValue: new Date(), operation: 'lt-date' },
+    { filterName: '待确认', filterField: 'status', filterValue: ORDER_STATUS.COMPLETED, operation: 'eq' },
+    // { filterName: '过期单', filterField: 'expireDate', filterValue: new Date(), operation: 'lt-date' },
 ]
 
 export default class RequestScreen extends React.Component {
@@ -90,26 +93,28 @@ export default class RequestScreen extends React.Component {
     onChange(e) {
         let index = e.nativeEvent.selectedSegmentIndex;
         let operation = ACTIONS[index].operation;
-        let filterName = ACTIONS[index].filterName;
+        let filterField = ACTIONS[index].filterField;
         let filterValue = ACTIONS[index].filterValue;
 
         let list = [];
         switch (operation) {
             case 'eq':
-                list = this._allList.filter(item => item[filterName] = filterValue)
+                list = this._allList.filter(item => item[filterField] = filterValue)
                 break;
             case 'ne':
-                list = this._allList.filter(item => item[filterName] != filterValue)
+                list = this._allList.filter(item => item[filterField] != filterValue)
                 break;
             case 'gt':
-                list = this._allList.filter(item => item[filterName] > filterValue)
+                list = this._allList.filter(item => item[filterField] > filterValue)
                 break;
             case 'lt-date':
-                list = this._allList.filter(item => new Date(item[filterName]) < filterValue)
+                list = this._allList.filter(item => new Date(item[filterField]) < filterValue)
                 break;
             case 'lt':
-                list = this._allList.filter(item => item[filterName] < filterValue)
+                list = this._allList.filter(item => item[filterField] < filterValue)
                 break;
+            default:
+                list = this._allList;
         }
 
         this.setState({ list: list });
@@ -171,7 +176,7 @@ export default class RequestScreen extends React.Component {
     _renderCard(data) {
 
         const { navigate } = this.props['navigation'];
-        return <View
+        return <View key={data._id}
             onTouchEnd={e => {
                 if (this._scrolling) return;
                 navigate('OrderDetail', { data: data });

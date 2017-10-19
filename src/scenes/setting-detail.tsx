@@ -123,16 +123,11 @@ export default class SettingDetailScreen extends React.Component {
                     overlay={[
                         (<PItem
                             key="5"
-                            value="init"
-                            onPress={() => params.initSettings()}
-                            style={{ whiteSpace: 'nowrap' }}>
-                            <Text>初始化</Text>
+                            value="init">
+                            <Text style={styles.pitem}>初始化</Text>
                         </PItem>),
                         (<PItem key="4" value="save">
-                            <Text>维修完成</Text>
-                        </PItem>),
-                        (<PItem key="6" value="help">
-                            <Text style={{ marginRight: 5 }}>帮助</Text>
+                            <Text style={styles.pitem}>维修完成</Text>
                         </PItem>)
                     ]}
                     onSelect={(e) => params.onSelect(e)}
@@ -250,6 +245,11 @@ export default class SettingDetailScreen extends React.Component {
         Mqtt.send(TOPIC_CFG, payload);
     }
 
+    getLabel(dataSet, value) {
+        value = value || 0;
+        return (dataSet || []).filter(item => item.value == value)[0].label;
+    }
+
     render() {
         return (
             <ScrollView>
@@ -281,7 +281,7 @@ export default class SettingDetailScreen extends React.Component {
                         data={coldInTempRange}
                         onOk={v => {
                             this.setState({
-                                coldInTemp: v
+                                coldInTemp: v[0]
                             }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
@@ -293,7 +293,7 @@ export default class SettingDetailScreen extends React.Component {
                         data={hotInTempRange}
                         onOk={v => {
                             this.setState({
-                                hotInTemp: v
+                                hotInTemp: v[0]
                             }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
@@ -305,7 +305,7 @@ export default class SettingDetailScreen extends React.Component {
                         data={coldOutTempRange}
                         onOk={v => {
                             this.setState({
-                                coldOutTemp: v
+                                coldOutTemp: v[0]
                             }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
@@ -318,7 +318,7 @@ export default class SettingDetailScreen extends React.Component {
                         data={hotOutTempRange}
                         onOk={v => {
                             this.setState({
-                                hotOutTemp: v
+                                hotOutTemp: v[0]
                             }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
@@ -327,11 +327,11 @@ export default class SettingDetailScreen extends React.Component {
                     </Picker>
 
 
-                    <Picker extra={this.state.coldCtrl}
+                    <Picker extra={this.getLabel(ctrlRange, this.state.coldCtrl)}
                         data={ctrlRange}
                         onOk={v => {
                             this.setState({
-                                coldCtrl: v
+                                coldCtrl: v[0]
                             }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
@@ -339,11 +339,11 @@ export default class SettingDetailScreen extends React.Component {
                         <Item arrow="horizontal">制冷控制选择设定</Item>
                     </Picker>
 
-                    <Picker extra={this.state.hotCtrl}
+                    <Picker extra={this.getLabel(ctrlRange, this.state.hotCtrl)}
                         data={ctrlRange}
                         onOk={v => {
                             this.setState({
-                                hotCtrl: v
+                                hotCtrl: v[0]
                             }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
@@ -355,7 +355,7 @@ export default class SettingDetailScreen extends React.Component {
                         data={tempWaterActionRange}
                         onOk={v => {
                             this.setState({
-                                tempWaterAction: v
+                                tempWaterAction: v[0]
                             }, this.onChange)
                         }}
                         onDismiss={() => console.log('dismiss')}
@@ -386,5 +386,9 @@ export default class SettingDetailScreen extends React.Component {
 const styles = StyleSheet.create({
     item: {
         alignItems: 'center'
+    },
+    pitem: {
+        fontSize: 30,
+        height: 50
     }
 })

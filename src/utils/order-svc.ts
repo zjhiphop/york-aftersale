@@ -1,5 +1,6 @@
 import API from './api';
 import { AsyncStorage } from 'react-native';
+import { ORDER_STATUS } from './misc';
 
 const PATH = {
     LIST: '/order',
@@ -9,7 +10,7 @@ const PATH = {
 
 let OrderSvc = {
     list(status?) {
-        status = status || 0;
+        status = status || ORDER_STATUS.BEFORE_ASSIGN;
         return API.get(PATH.LIST + '?status=' + status);
     },
     detail(id) {

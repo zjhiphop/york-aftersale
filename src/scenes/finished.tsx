@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { List, Card, WingBlank, WhiteSpace, Toast, Button, Badge } from 'antd-mobile';
 import call from 'react-native-phone-call';
 import OrderSvc from '../utils/order-svc';
+import { ORDER_STATUS } from '../utils/misc';
 
 let Item = List.Item;
 
@@ -11,25 +12,21 @@ export default class FinishedScreen extends React.Component {
     constructor(props) {
         super(props);
 
-        // OrderSvc.list(2).then(res => {
-        //     console.log(res);
-        //     this.setState({
-        //         'list': res.list || []
-        //     });
-        // })
+        OrderSvc.list(ORDER_STATUS.CONFIRMED).then(res => {
+            console.log(res);
+
+            if (res.list.length === 0) {
+                Toast.info('暂无完成订单');
+            }
+            this.setState({
+                'list': res.list || []
+            });
+        })
     }
 
     state = {
         list: [{
             title: '马三',
-            customerPhone: '13666666666',
-            detail: '水泵故障',
-            customerAddress: '无锡市南长区XXX',
-            createAt: '2017-09-22 15:20:30',
-            _id: 1
-        },
-        {
-            title: '赵五',
             customerPhone: '13666666666',
             detail: '水泵故障',
             customerAddress: '无锡市南长区XXX',
@@ -42,17 +39,17 @@ export default class FinishedScreen extends React.Component {
     };
     render() {
         return (
-            <View>
+            <ScrollView>
                 <WingBlank size="lg">
                     <WhiteSpace size="lg" />
                     {this.state.list.map(this._renderCard.bind(this))}
                 </WingBlank>
-            </View>
+            </ScrollView>
         );
     }
 
     _renderCard(data) {
-        return <View>
+        return <View key={data._id}>
             <List>
                 <Item extra={<Text style={styles.title} onPress={e => {
 

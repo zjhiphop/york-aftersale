@@ -15,6 +15,9 @@ import Timeline from 'react-native-timeline-listview';
 export default class OrderDetailScreen extends React.Component {
     constructor(prop) {
         super(prop);
+    }
+
+    componentDidMount() {
         const { state } = this.props['navigation'];
 
         console.log(state.params);
@@ -34,10 +37,6 @@ export default class OrderDetailScreen extends React.Component {
                 currLocation: res
             })
         })
-    }
-
-    componentDidMount() {
-
     }
 
     state = {
@@ -131,7 +130,7 @@ export default class OrderDetailScreen extends React.Component {
 
                         data={this.state.data.orderHistory.map(item => {
                             return {
-                                time: item.createAt.split(' ')[1],
+                                time: moment(item.createAt).format('YYYY-MM-DD'),
                                 title: item.operation,
                                 description: item.operation
                             }
