@@ -52,7 +52,7 @@ export default class OrderDetailScreen extends React.Component {
             "customerAddress": "无锡市南长区南湖大道789号",
             "backendNote": "123123",
             "frontendNote": null,
-            "status": 4,
+            "status": 1,
             "expectDate": "2017-09-22T01:48:59.045Z",
             "expireDate": "2017-10-16T07:42:08.215Z",
             "createAt": "2017-09-22T01:48:59.050Z",
@@ -156,11 +156,17 @@ export default class OrderDetailScreen extends React.Component {
 
                     }}
                 ></TextareaItem>
+                <WhiteSpace size="lg" />
             </ScrollView>
+            <View style={{ height: 50, bottom: 10 }}>
+                <Button type="primary" onClick={e => {
+                    navigate('Settings', { data: [this.state.data] });
+                }}>新装配置</Button><WhiteSpace />
+            </View>
             <View style={{ height: 50, bottom: 0 }}>
                 <Button type="primary" onClick={e => {
-                    navigate('SettingDetail', this.state.data);
-                }}>去配置</Button><WhiteSpace />
+                    navigate('SettingDetail', { data: this.state.data });
+                }}>维修配置</Button><WhiteSpace />
             </View>
         </View >
     }

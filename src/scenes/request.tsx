@@ -99,7 +99,7 @@ export default class RequestScreen extends React.Component {
         let list = [];
         switch (operation) {
             case 'eq':
-                list = this._allList.filter(item => item[filterField] = filterValue)
+                list = this._allList.filter(item => item[filterField] == filterValue)
                 break;
             case 'ne':
                 list = this._allList.filter(item => item[filterField] != filterValue)

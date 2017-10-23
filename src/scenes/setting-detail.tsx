@@ -27,6 +27,7 @@ import {
 import { NavBarButtonPress } from 'react-navigation';
 import TextStyles from '../style/text';
 import OrderSvc from '../utils/order-svc';
+import DvcSvc from '../utils/dvc-svc';
 
 const Item = List.Item;
 const Brief = Item.Brief;
@@ -63,12 +64,6 @@ export default class SettingDetailScreen extends React.Component {
             `/MAC/${MAC}/#`
         ]);
 
-        this.saveCtrl = this.saveCtrl.bind(this);
-
-        const { state } = this.props['navigation'];
-
-        console.log(this._data = state.params);
-        console.log(this.props);
     }
 
     _data: { _id: null }
@@ -142,18 +137,19 @@ export default class SettingDetailScreen extends React.Component {
             }}
             >
                 <Button type="ghost" size="small" onClick={e => {
-                    ActionSheet.showActionSheetWithOptions({
-                        options: BUTTONS,
-                        cancelButtonIndex: BUTTONS.length - 1,
-                        title: '请选择操作类型',
-                        maskClosable: true,
-                        'data-seed': 'logId',
-                        wrapProps,
-                    },
-                        (buttonIndex) => {
-                            params.onSelect(BUTTONS[buttonIndex]);
-                        });
-                }}>操作</Button>
+                    // ActionSheet.showActionSheetWithOptions({
+                    //     options: BUTTONS,
+                    //     cancelButtonIndex: BUTTONS.length - 1,
+                    //     title: '请选择操作类型',
+                    //     maskClosable: true,
+                    //     'data-seed': 'logId',
+                    //     wrapProps,
+                    // },
+                    //     (buttonIndex) => {
+                    //         params.onSelect(BUTTONS[buttonIndex]);
+                    //     });
+                    params.initSettings();
+                }}>初始化</Button>
             </View>
         };
     };
@@ -198,6 +194,20 @@ export default class SettingDetailScreen extends React.Component {
             initSettings: this.initSettings.bind(this),
             onSelect: this.onSelect.bind(this)
         });
+
+        this.saveCtrl = this.saveCtrl.bind(this);
+
+        const { state } = this.props['navigation'];
+
+        console.log(this._data = state.params);
+        console.log(this.props);
+
+        if (state.params.data.customerPhone) {
+            DvcSvc.list(state.params.data.customerPhone).then(res => {
+                console.log(res);
+            })
+        }
+
     }
 
 

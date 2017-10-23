@@ -6,7 +6,7 @@ import {
     Button, SearchBar, Modal
 } from 'antd-mobile';
 import { TcpManager } from '../utils/tcp';
-
+import DvcSvc from '../utils/dvc-svc'
 const prompt = Modal.prompt;
 export default class SettingScreen extends React.Component {
     static navigationOptions = {
@@ -14,11 +14,25 @@ export default class SettingScreen extends React.Component {
     }
 
     public state = {
+        list: [],
         percent: 10,
         focused: false,
         searchText: '',
         connecting: false,
         loadingText: '正在连接温控热点(York)...'
+    }
+    componentDidMount() {
+        const { state } = this.props['navigation'];
+
+        console.log(state.params);
+
+        DvcSvc.list(state.params.data.customerPhone).then(res => {
+
+            this.setState({
+                list: res.list
+            });
+
+        })
     }
 
     onConfigWIFI() {
@@ -81,7 +95,12 @@ export default class SettingScreen extends React.Component {
                             });
                         }}
                         onSubmit={value => {
-                            alert('正在搜索：' + value);
+                            setTimeout(e => {
+                                DvcSvc.list(value).then(res => {
+                                    console.log(res);
+                                    this.setState({ list: res.list });
+                                }).catch(e => console.error);
+                            }, 100);
                         }}
                         onCancel={e => {
                             this.setState({
@@ -92,23 +111,17 @@ export default class SettingScreen extends React.Component {
                 </List>
                 <WhiteSpace />
                 <List renderHeader={() => '温控列表'}>
-                    <List.Item multipleLine arrow="horizontal" onClick={e => {
-                        navigate('SettingDetail');
-                    }}>
-                        温控1 <List.Item.Brief>故障：无</List.Item.Brief>
-                    </List.Item>
-                    <List.Item multipleLine arrow="horizontal">
-                        温控2 <List.Item.Brief>故障：A01</List.Item.Brief>
-                    </List.Item>
-                    <List.Item multipleLine arrow="horizontal">
-                        温控3 <List.Item.Brief>故障：A02</List.Item.Brief>
-                    </List.Item>
-                    <List.Item multipleLine arrow="horizontal">
-                        温控4 <List.Item.Brief>故障：无</List.Item.Brief>
-                    </List.Item>
-                    <List.Item multipleLine arrow="horizontal">
-                        温控5 <List.Item.Brief>故障：无</List.Item.Brief>
-                    </List.Item>
+
+                    {
+                        this.state.list.map(item => {
+                            return <List.Item multipleLine arrow="horizontal" onClick={e => {
+                                navigate('SettingDetail', { data: item });
+                            }}>
+                                {item.location} <List.Item.Brief>{item.contact}</List.Item.Brief>
+                            </List.Item>
+                        })
+                    }
+
                 </List>
             </View >
         );

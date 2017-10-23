@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text, AsyncStorage } from 'react-native';
 import { InputItem, List, Button, WhiteSpace } from 'antd-mobile';
-
+import UserSvc from '../utils/user-svc';
 export default class MyScreen extends React.Component {
 
     componentWillMount() {
@@ -40,7 +40,11 @@ export default class MyScreen extends React.Component {
                     }}>关于</List.Item>
                 </List >
                 <WhiteSpace size="xl" />
-                <Button type="primary">退出登录</Button>
+                <Button type="primary" onClick={e => {
+                    UserSvc.logout();
+
+                    navigate('Login')
+                }}>退出登录</Button>
             </View >
         );
     }

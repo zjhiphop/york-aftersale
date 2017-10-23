@@ -41,6 +41,11 @@ let UserSvc = {
 
     getGatesList() {
 
+    },
+
+    logout() {
+        AsyncStorage.removeItem('token');
+        AsyncStorage.removeItem('user');
     }
 }
 

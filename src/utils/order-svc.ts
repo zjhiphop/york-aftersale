@@ -10,8 +10,7 @@ const PATH = {
 
 let OrderSvc = {
     list(status?) {
-        status = status || ORDER_STATUS.BEFORE_ASSIGN;
-        return API.get(PATH.LIST + '?status=' + status);
+        return API.get(PATH.LIST + (status ? '?status=' + status : ''));
     },
     detail(id) {
         return API.get(PATH.DETAIL + id);
