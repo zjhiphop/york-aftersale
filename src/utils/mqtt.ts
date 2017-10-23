@@ -79,6 +79,7 @@ class Mqtt {
     }
 
     onConnectSuccess() {
+        console.log('MQTT Server connected!')
         this.client.subscribe.apply(this.client, this.topics || []);
     }
 
@@ -115,16 +116,16 @@ class Mqtt {
             password: 'public',
             onSuccess: this.onConnectSuccess.bind(this)
         })
-            .then(() => {
-                // Once a connection has been made, make a subscription and send a message. 
-                console.log('onConnect');
-                return this.client.subscribe('World');
-            })
-            .then(() => {
-                const message = new Message('Hello');
-                message.destinationName = 'World';
-                this.client.send(message);
-            })
+            // .then(() => {
+            //     // Once a connection has been made, make a subscription and send a message. 
+            //     console.log('onConnect');
+            //     return this.client.subscribe('World');
+            // })
+            // .then(() => {
+            //     const message = new Message('Hello');
+            //     message.destinationName = 'World';
+            //     this.client.send(message);
+            // })
             .catch((responseObject) => {
                 if (responseObject.errorCode !== 0) {
                     console.log('onConnectionLost:' + responseObject.errorMessage);

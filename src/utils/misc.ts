@@ -181,7 +181,7 @@ export function composeMQTTPayload(config) {
 function parseBitwise(excp, base?) {
     base = base || 0;
 
-    excp = parseInt(excp.slice(2, 4) + excp.slice(0, 2));
+    excp = parseInt(excp.slice(2, 4) + excp.slice(0, 2), 16);
 
     if (excp === 0) {
         return [];
@@ -321,4 +321,21 @@ export function payloadParser(payload) {
     result.actionType = actionType;
 
     return result;
+}
+
+export function errorParser(payload) {
+    if (!payload) return {};
+
+    let errorCode = payload.slice(payload.length - 4, payload.length - 2);
+    let errMsg = '';
+
+    if (errorCode == 0) {
+
+    } else if (errorCode == 1) {
+        errMsg = '接收数据格式错误或非法数据';
+    }
+
+    return {
+        errorCode, errMsg
+    }
 }

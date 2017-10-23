@@ -94,7 +94,6 @@ export default class ButtonSubmit extends React.Component<any, any> {
                         {this.state.isLoading ?
                             <ActivityIndicator
                                 text="正在登录"
-                                color="white"
                                 animating={true}
                             /> :
                             <Text style={styles.text}>登录</Text>

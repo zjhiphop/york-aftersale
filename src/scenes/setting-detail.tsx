@@ -5,7 +5,7 @@ import {
     Picker,
     WingBlank,
     WhiteSpace,
-    List,
+    List, ActionSheet,
     Modal, Toast,
     PickerView,
     Button, Popover, Icon
@@ -21,6 +21,7 @@ import {
     TIME_KEY,
     payloadParser,
     MQTT_ACTION,
+    errorParser,
     POWER, ACTION_TYPE
 } from '../utils/misc';
 import { NavBarButtonPress } from 'react-navigation';
@@ -44,8 +45,17 @@ const TOPIC_DATA = `/MAC/${MAC}/DA`;
 const TOPIC_CTRL = `/MAC/${MAC}/DC`;
 const TOPIC_CFG = `/MAC/${MAC}/CFG`;
 const TOPIC_DR = `/MAC/${MAC}/DR`;
+const TOPIC_ERROR = `/MAC/${MAC}/ERROR`;
+const TOPIC_ACK = `/MAC/${MAC}/ACK`;
 const customIcon = src => <img src={src} className="am-icon am-icon-xs" alt="icon" />;
 
+const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
+let wrapProps;
+if (isIPhone) {
+    wrapProps = {
+        onTouchStart: e => e.preventDefault(),
+    };
+}
 export default class SettingDetailScreen extends React.Component {
     constructor(props) {
         super(props);
@@ -53,7 +63,7 @@ export default class SettingDetailScreen extends React.Component {
             `/MAC/${MAC}/#`
         ]);
 
-        this.onChange = this.onChange.bind(this);
+        this.saveCtrl = this.saveCtrl.bind(this);
 
         const { state } = this.props['navigation'];
 
@@ -108,42 +118,45 @@ export default class SettingDetailScreen extends React.Component {
         EventRegister.on(TOPIC_CFG, payload => {
             console.log('new cfg read: ', payload);
         });
+
+        EventRegister.on(TOPIC_ERROR, payload => {
+            console.error('配置出错:', errorParser(payload));
+        });
+
+        EventRegister.on(TOPIC_ACK, payload => {
+            Toast.show('配置成功！');
+        });
     }
 
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
-
+        const BUTTONS = ['初始化', '维修完成', '取消']
         return {
             title: "配置详情",
-            headerRight: <View>
-                <Popover
-                    overlayStyle={{
-                        top: 30
-                    }}
-                    overlay={[
-                        (<PItem
-                            key="5"
-                            value="init">
-                            <Text style={styles.pitem}>初始化</Text>
-                        </PItem>),
-                        (<PItem key="4" value="save">
-                            <Text style={styles.pitem}>维修完成</Text>
-                        </PItem>)
-                    ]}
-                    onSelect={(e) => params.onSelect(e)}
-                >
-                    <View style={{
-                        height: '100%',
-                        padding: 15,
-                        marginRight: 15,
-                        display: 'flex',
-                        alignItems: 'center',
-                    }}
-                    >
-                        <Icon type="ellipsis" />
-                    </View>
-
-                </Popover>
+            headerRight: <View style={{
+                height: '100%',
+                padding: 15,
+                marginRight: 15,
+                display: 'flex',
+                alignItems: 'center',
+            }}
+            >
+                <Text style={{
+                    color: '#222',
+                    fontSize: 16
+                }} onPress={e => {
+                    ActionSheet.showActionSheetWithOptions({
+                        options: BUTTONS,
+                        cancelButtonIndex: BUTTONS.length - 1,
+                        title: '请选择操作类型',
+                        maskClosable: true,
+                        'data-seed': 'logId',
+                        wrapProps,
+                    },
+                        (buttonIndex) => {
+                            params.onSelect(BUTTONS[buttonIndex]);
+                        });
+                }}>操作</Text>
             </View>
         };
     };
@@ -171,9 +184,9 @@ export default class SettingDetailScreen extends React.Component {
     onSelect(action) {
         const { navigate } = this.props['navigation'];
 
-        if (action === 'init') {
+        if (action === '初始化') {
             this.initSettings();
-        } else if (action === 'save') {
+        } else if (action === '维修完成') {
             if (this._data._id) {
                 OrderSvc.setDone(this._data._id).then(res => {
                     Toast.info("保存成功！");
@@ -211,7 +224,7 @@ export default class SettingDetailScreen extends React.Component {
         },
         visible: false
     }
-    onChange() {
+    saveCtrl() {
         // ctrl gate
         // Mqtt.send(TOPIC_CTRL, composeMQTTPayload({
         //     action: MQTT_ACTION.DC,
@@ -254,22 +267,17 @@ export default class SettingDetailScreen extends React.Component {
         return (
             <ScrollView>
 
+                <WhiteSpace />
                 <View>
-                    <Item extra={
-                        <View>
-                            <Text style={{
-                                position: "absolute",
-                                right: 0
-                            }}>清除({this.state.status.exception.values.length})</Text></View>
-                    }>
-                        故障状态码
-                        </Item>
+                    <Item align='middle'>
+                        <Text style={styles.itemTitle}>故障状态码({this.state.status.exception.values.length})</Text>
+                    </Item>
 
                     {this.state.status.exception.values.map(item => {
                         if (item.code) {
                             return <Item style={styles.item} multipleLine extra={
-                                <Text>{[item.code, item.value, item.desc].join(' ')}</Text>
-                            }></Item>
+                                <Text>{item.desc}</Text>
+                            }>{item.code + ':' + item.value}</Item>
                         }
                         return null;
                     })}
@@ -277,53 +285,65 @@ export default class SettingDetailScreen extends React.Component {
 
                 <WhiteSpace />
                 <List>
-                    <Picker extra={this.state.coldInTemp}
+                    <Item align='middle' extra={
+                        <Text onPress={e => {
+                            this.saveCtrl();
+                        }}>保存</Text>
+                    }>
+                        <Text style={styles.itemTitle}>配置列表</Text>
+                    </Item>
+
+                    <Picker
+                        extra={this.state.coldInTemp}
                         data={coldInTempRange}
                         onOk={v => {
                             this.setState({
-                                coldInTemp: v[0]
-                            }, this.onChange)
+                                coldInTemp: v
+                            })
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制冷回水温度设定值</Item>
+                        <Item arrow="horizontal">制冷回水温度设定(℃)</Item>
                     </Picker>
 
                     <Picker extra={this.state.hotInTemp}
                         data={hotInTempRange}
                         onOk={v => {
                             this.setState({
-                                hotInTemp: v[0]
-                            }, this.onChange)
+                                hotInTemp: v
+                            })
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制热回水温度设定</Item>
+                        <Item arrow="horizontal">制热回水温度设定(℃)</Item>
                     </Picker>
 
                     <Picker extra={this.state.coldOutTemp}
                         data={coldOutTempRange}
                         onOk={v => {
                             this.setState({
-                                coldOutTemp: v[0]
-                            }, this.onChange)
+                                coldOutTemp: v
+                            })
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制冷出水温度设定</Item>
+                        <Item arrow="horizontal">制冷出水温度设定(℃)</Item>
                     </Picker>
 
 
                     <Picker extra={this.state.hotOutTemp}
+                        format={values => {
+                            return values.join('');
+                        }}
                         data={hotOutTempRange}
                         onOk={v => {
                             this.setState({
-                                hotOutTemp: v[0]
-                            }, this.onChange)
+                                hotOutTemp: v
+                            })
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制热出水温度设定</Item>
+                        <Item arrow="horizontal">制热出水温度设定(℃)</Item>
                     </Picker>
 
 
@@ -331,8 +351,8 @@ export default class SettingDetailScreen extends React.Component {
                         data={ctrlRange}
                         onOk={v => {
                             this.setState({
-                                coldCtrl: v[0]
-                            }, this.onChange)
+                                coldCtrl: v
+                            })
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
@@ -343,8 +363,8 @@ export default class SettingDetailScreen extends React.Component {
                         data={ctrlRange}
                         onOk={v => {
                             this.setState({
-                                hotCtrl: v[0]
-                            }, this.onChange)
+                                hotCtrl: v
+                            })
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
@@ -355,8 +375,8 @@ export default class SettingDetailScreen extends React.Component {
                         data={tempWaterActionRange}
                         onOk={v => {
                             this.setState({
-                                tempWaterAction: v[0]
-                            }, this.onChange)
+                                tempWaterAction: v
+                            })
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
@@ -371,11 +391,11 @@ export default class SettingDetailScreen extends React.Component {
 
                 <View>
                     <Item>实时温控状态</Item>
-                    <Item><Text>开关: {this.state.status.powerStatus}</Text></Item>
-                    <Item><Text>HMI通信状态: {this.state.status.conn}</Text></Item>
-                    <Item><Text>入水温度: {this.state.status.tempIn}</Text></Item>
-                    <Item><Text>出水温度: {this.state.status.tempOut}</Text></Item>
-                    <Item><Text>环境温度: {this.state.status.tempEnv}</Text></Item>
+                    <Item><Text>开关: {(this.state.status.powerStatus == POWER.ON ? '开' : '关')}</Text></Item>
+                    <Item><Text>HMI通信状态: {this.state.status.conn == '00' ? '断' : '通'}</Text></Item>
+                    <Item><Text>入水温度: {this.state.status.tempIn}℃ </Text></Item>
+                    <Item><Text>出水温度: {this.state.status.tempOut}℃ </Text></Item>
+                    <Item><Text>环境温度: {this.state.status.tempEnv}℃ </Text></Item>
                 </View>
 
             </ScrollView>
@@ -386,6 +406,10 @@ export default class SettingDetailScreen extends React.Component {
 const styles = StyleSheet.create({
     item: {
         alignItems: 'center'
+    },
+    itemTitle: {
+        fontSize: 18,
+        color: '#111'
     },
     pitem: {
         fontSize: 20,
