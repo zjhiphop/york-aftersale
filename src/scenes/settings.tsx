@@ -26,6 +26,8 @@ export default class SettingScreen extends React.Component {
 
         console.log(state.params);
 
+        if (!state.params.data) return;
+
         DvcSvc.list(state.params.data.customerPhone).then(res => {
 
             this.setState({

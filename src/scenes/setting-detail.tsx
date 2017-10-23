@@ -60,10 +60,6 @@ if (isIPhone) {
 export default class SettingDetailScreen extends React.Component {
     constructor(props) {
         super(props);
-        let client = Mqtt.subscribe([
-            `/MAC/${MAC}/#`
-        ]);
-
     }
 
     _data: { _id: null }
@@ -205,7 +201,17 @@ export default class SettingDetailScreen extends React.Component {
         if (state.params.data.customerPhone) {
             DvcSvc.list(state.params.data.customerPhone).then(res => {
                 console.log(res);
+
+                if (res.list.length == 0) return;
+
+                Mqtt.subscribe([
+                    `/MAC/${res.list[0].mac}/#`
+                ]);
             })
+        } else {
+            Mqtt.subscribe([
+                `/MAC/${state.params.data.mac}/#`
+            ]);
         }
 
     }
