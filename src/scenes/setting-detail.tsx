@@ -141,10 +141,7 @@ export default class SettingDetailScreen extends React.Component {
                 alignItems: 'center',
             }}
             >
-                <Text style={{
-                    color: '#222',
-                    fontSize: 16
-                }} onPress={e => {
+                <Button type="ghost" size="small" onClick={e => {
                     ActionSheet.showActionSheetWithOptions({
                         options: BUTTONS,
                         cancelButtonIndex: BUTTONS.length - 1,
@@ -156,7 +153,7 @@ export default class SettingDetailScreen extends React.Component {
                         (buttonIndex) => {
                             params.onSelect(BUTTONS[buttonIndex]);
                         });
-                }}>操作</Text>
+                }}>操作</Button>
             </View>
         };
     };
@@ -286,9 +283,9 @@ export default class SettingDetailScreen extends React.Component {
                 <WhiteSpace />
                 <List>
                     <Item align='middle' extra={
-                        <Text onPress={e => {
+                        <Button type="ghost" size="small" onClick={e => {
                             this.saveCtrl();
-                        }}>保存</Text>
+                        }} inline>保存</Button>
                     }>
                         <Text style={styles.itemTitle}>配置列表</Text>
                     </Item>
@@ -303,7 +300,7 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制冷回水温度设定(℃)</Item>
+                        <Item arrow="horizontal">制冷回水温度(℃)</Item>
                     </Picker>
 
                     <Picker extra={this.state.hotInTemp}
@@ -315,7 +312,7 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制热回水温度设定(℃)</Item>
+                        <Item arrow="horizontal">制热回水温度(℃)</Item>
                     </Picker>
 
                     <Picker extra={this.state.coldOutTemp}
@@ -327,7 +324,7 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制冷出水温度设定(℃)</Item>
+                        <Item arrow="horizontal">制冷出水温度(℃)</Item>
                     </Picker>
 
 
@@ -343,7 +340,7 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制热出水温度设定(℃)</Item>
+                        <Item arrow="horizontal">制热出水温度(℃)</Item>
                     </Picker>
 
 
@@ -356,7 +353,7 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制冷控制选择设定</Item>
+                        <Item arrow="horizontal">制冷控制选择</Item>
                     </Picker>
 
                     <Picker extra={this.getLabel(ctrlRange, this.state.hotCtrl)}
@@ -368,7 +365,7 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">制热控制选择设定</Item>
+                        <Item arrow="horizontal">制热控制选择</Item>
                     </Picker>
 
                     <Picker extra={this.state.tempWaterAction}
@@ -380,7 +377,7 @@ export default class SettingDetailScreen extends React.Component {
                         }}
                         onDismiss={() => console.log('dismiss')}
                     >
-                        <Item arrow="horizontal">水温动作回差设定</Item>
+                        <Item arrow="horizontal">水温动作回差</Item>
                     </Picker>
 
                     <Item extra={this.state.ctrlCycle}>
