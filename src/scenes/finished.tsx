@@ -39,7 +39,11 @@ export default class FinishedScreen extends React.Component {
     };
     render() {
         return (
-            <ScrollView>
+            <ScrollView onScrollBeginDrag={e => {
+                this._scrolling = true;
+            }} onScrollEndDrag={e => {
+                this._scrolling = false;
+            }}>
                 <WingBlank size="lg">
                     <WhiteSpace size="lg" />
                     {this.state.list.map(this._renderCard.bind(this))}
@@ -47,12 +51,14 @@ export default class FinishedScreen extends React.Component {
             </ScrollView>
         );
     }
-
+    _scrolling = false;
     _renderCard(data) {
+        const { navigate } = this.props['navigation'];
+
         return <View key={data._id}>
             <List>
                 <Item extra={<Text style={styles.title} onPress={e => {
-
+                    if (this._scrolling) return;
                     const args = {
                         number: data.customerPhone, // String value with the number to call
                         prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
@@ -60,9 +66,12 @@ export default class FinishedScreen extends React.Component {
 
                     call(args).catch(console.error)
 
-                }} >{data.customerPhone}</Text>} >{data.title}</Item>
+                }}>{data.customerPhone}</Text>} >{data.title}</Item>
 
-                <Item style={styles.body}>
+                <Item onClick={e => {
+                    if (this._scrolling) return;
+                    navigate('OrderDetail', { data: data });
+                }} style={styles.body}>
                     <Text> {data.detail} </Text>
                     <Text> 住址：{data.customerAddress}</Text>
                 </Item>

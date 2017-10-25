@@ -75,7 +75,7 @@ class API {
                 console.error(error);
                 reject(error);
             }
-        });
+        }).catch(console.error);
     }
 
     async post(path, data?) {

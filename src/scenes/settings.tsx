@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import {
-    Progress, WhiteSpace,
+    Progress, WhiteSpace, Toast,
     ActivityIndicator, List,
     Button, SearchBar, Modal
 } from 'antd-mobile';
 import { TcpManager } from '../utils/tcp';
-import DvcSvc from '../utils/dvc-svc'
+import DvcSvc from '../utils/dvc-svc';
+import OrderSvc from '../utils/order-svc';
+
 const prompt = Modal.prompt;
 export default class SettingScreen extends React.Component {
     static navigationOptions = {
@@ -26,7 +28,7 @@ export default class SettingScreen extends React.Component {
 
         console.log(state.params);
 
-        if (!state.params.data) return;
+        if (!state.params) return;
 
         DvcSvc.list(state.params.data.customerPhone).then(res => {
 
@@ -38,6 +40,8 @@ export default class SettingScreen extends React.Component {
     }
 
     onConfigWIFI() {
+        const { state } = this.props['navigation'];
+
         this.setState({
             connecting: true
         });
@@ -46,7 +50,18 @@ export default class SettingScreen extends React.Component {
             this.setState({ connecting: false });
         }, 2000);
 
-        TcpManager.tryConnect().then(client => {
+        TcpManager.tryConnect(data => {
+            alert(data);
+
+            if (state.params && data.indexOf('MAC:') === 0) {
+                let MAC = (data + '').split(':')[1];
+                let order = state.params.data;
+
+                DvcSvc.create(order.customerAddress, order.customerPhone, MAC).then(res => {
+                    console.log('Device Created Success: ', res);
+                }, console.error);
+            }
+        }).then(client => {
 
             this.setState({ connecting: false });
 
@@ -62,6 +77,8 @@ export default class SettingScreen extends React.Component {
                     this.setState({
                         loadingText: `正在配置温控SSID和密码: SSID:${ssid}KEY:${pass}`
                     });
+
+                    Toast.show('正在配置...');
 
                     setTimeout(() => {
                         client['write'](`SSID:${ssid}KEY:${pass}`);

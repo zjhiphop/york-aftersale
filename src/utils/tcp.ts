@@ -1,11 +1,11 @@
 import { TCP_CONFIG } from '../constants';
 var net = require('net');
-
+import { Toast } from 'antd-mobile';
 export var TcpManager = {
     client: null,
     isConnected: false,
-    tryConnect() {
-
+    tryConnect(onData?) {
+        this.onData = onData || function () { };
         return new Promise((resolve, reject) => {
             try {
                 if (this.client && this.isConnected) {
@@ -14,6 +14,7 @@ export var TcpManager = {
 
                 this.client = net.createConnection(TCP_CONFIG.port, TCP_CONFIG.host, () => {
 
+                    Toast.show('York服务器已连接');
                     this.isConnected = true;
                     // this.client.write('Hello, server! Love, Client.');
                     this.initEvents();
@@ -30,12 +31,13 @@ export var TcpManager = {
         if (!this.client) return;
 
         this.client.on('data', data => {
-            alert('Received: ' + data);
+            console.log('Received: ' + data);
+            this.onData(data);
         });
 
         this.client.on('close', () => {
             this.isConnected = false;
-            alert('Connection closed');
+            this.destory();
         });
     },
 

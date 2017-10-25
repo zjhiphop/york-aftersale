@@ -170,8 +170,9 @@ export default class RequestScreen extends React.Component {
                 }
             });
     }
-    _renderBadge(date) {
-        return this.isExpired(date) ? <Badge text="已过期" style={styles.badge}></Badge> : <Text></Text>;
+    _renderBadge(data) {
+        return (this.isExpired(data.expireDate) && data.status < ORDER_STATUS.CONFIRMED)
+            ? <Badge text="已过期" style={styles.badge}></Badge> : <Text></Text>;
     }
     _renderCard(data) {
 
@@ -203,7 +204,7 @@ export default class RequestScreen extends React.Component {
                 <Card.Body>
                     <View style={styles.body}>
                         <Text style={styles.detail}> {data.detail} </Text>
-                        {this._renderBadge(data.expireDate)}
+                        {this._renderBadge(data)}
                         <View onTouchEnd={e => {
                             if (this._scrolling) return;
                             e.stopPropagation();

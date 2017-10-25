@@ -6,6 +6,7 @@ import {
     Badge, InputItem, TextareaItem,
     Steps
 } from 'antd-mobile';
+import { ORDER_STATUS } from '../utils/misc';
 
 import call from 'react-native-phone-call';
 import OrderSvc from '../utils/order-svc';
@@ -77,8 +78,9 @@ export default class OrderDetailScreen extends React.Component {
         return moment().toDate() > new Date(dateString);
     }
 
-    _renderBadge(date) {
-        return this.isExpired(date) ? <Badge text="已过期" style={styles.badge}></Badge> : <Text></Text>;
+    _renderBadge(data) {
+        return (this.isExpired(data.expireDate) && data.status < ORDER_STATUS.CONFIRMED)
+            ? <Badge text="已过期" style={styles.badge}></Badge> : <Text></Text>;
     }
 
     showMapAction(message) {
@@ -113,7 +115,7 @@ export default class OrderDetailScreen extends React.Component {
                         <Card.Body>
                             <View style={styles.body}>
                                 <Text style={styles.detail}> {this.state.data.detail} </Text>
-                                {this._renderBadge(this.state.data.expireDate)}
+                                {this._renderBadge(this.state.data)}
                                 <View onTouchEnd={e => {
                                     e.stopPropagation();
                                     this.showMapAction(this.state.data.customerAddress);
@@ -160,7 +162,7 @@ export default class OrderDetailScreen extends React.Component {
             </ScrollView>
             <View style={{ height: 50, bottom: 10 }}>
                 <Button type="primary" onClick={e => {
-                    navigate('Settings', { data: [this.state.data] });
+                    navigate('Settings', { data: this.state.data });
                 }}>新装配置</Button><WhiteSpace />
             </View>
             <View style={{ height: 50, bottom: 0 }}>
