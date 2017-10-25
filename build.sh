@@ -19,7 +19,7 @@ then
 
     xcodebuild archive -project aftersale.xcodeproj -scheme aftersale -configuration Release -archivePath dist/aftersale.archive
     xcodebuild -exportArchive -exportOptionsPlist build.plist -archivePath dist/aftersale.archive.xcarchive -exportPath dist
-    fir publish 'dist/bolang-app.ipa' -T $FIR_TOKEN -c "build verson ${VERSION}"
+    fir publish 'dist/aftersale.ipa' -T $FIR_TOKEN -c "build verson ${VERSION}"
 
     cd ..
 else
