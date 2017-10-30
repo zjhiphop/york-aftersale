@@ -134,7 +134,8 @@ export default class SettingScreen extends React.Component {
                         }}
                         onSubmit={value => {
                             setTimeout(e => {
-                                DvcSvc.list(value).then(res => {
+                                this._page = 1;
+                                DvcSvc.list(value, 1, this._pageSize).then(res => {
                                     console.log(res);
                                     this.setState({ list: res.list });
                                 }).catch(e => console.error);
