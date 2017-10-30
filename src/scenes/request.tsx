@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { View, ListView, Text, StyleSheet } from 'react-native';
 import {
     Card, WingBlank, WhiteSpace,
     Toast, Button, ActionSheet,
     Badge, SegmentedControl
 } from 'antd-mobile';
-
 import call from 'react-native-phone-call';
 import OrderSvc from '../utils/order-svc';
 import { MAPS_TYPE, MapSvc } from '../utils/map-svc';
 import moment from 'moment';
 import { ORDER_STATUS } from '../utils/misc';
+import PullToScroll from '../components/pull-to-scroll';
 
 const ACTIONS = [
     { filterName: '所有单', operation: null, filterValue: null, filterField: null },
@@ -21,17 +21,26 @@ const ACTIONS = [
 ]
 
 export default class RequestScreen extends React.Component {
+
+    _scrolling = false
+    static navigationOptions = {
+        title: '待处理单'
+    };
+
+    _allList = []
+    _page = 1
+    _pageSize = 3
+
     constructor(props) {
         super(props);
 
-        OrderSvc.list().then(res => {
-            console.log(res);
-            this._allList = res.list;
+        this.onChange = this.onChange.bind(this);
 
-            this.setState({
-                'list': res.list || []
-            });
-        })
+    }
+
+    componentDidMount() {
+
+        this._loadList();
 
         MapSvc.getMapTypes().then(res => {
             this.setState({
@@ -43,19 +52,29 @@ export default class RequestScreen extends React.Component {
             this.setState({
                 currLocation: res
             })
-        })
-
-        this.onChange = this.onChange.bind(this);
+        });
     }
-    static navigationOptions = {
-        title: '待处理单'
-    };
 
-    _allList = []
+    _loadList() {
+        this.setState({ refreshing: true });
+
+        return OrderSvc.list(null, this._page++, this._pageSize).then(res => {
+            console.log(res);
+            this._allList = res.list.concat(this._allList);
+
+            this.setState({
+                enableLoad: (res.page - 1) * res.limit + res.list.length < res.total,
+                'list': this._allList,
+                refreshing: false
+            });
+        })
+    }
 
     state = {
         currLocation: {},
         mapTypes: [],
+        refreshing: false,
+        enableLoad: true,
         list: [
             {
                 "title": "空调初始化2",
@@ -87,9 +106,6 @@ export default class RequestScreen extends React.Component {
     isExpired(dateString) {
         return moment().toDate() > new Date(dateString);
     }
-
-    _scrolling = false
-
     onChange(e) {
         let index = e.nativeEvent.selectedSegmentIndex;
         let operation = ACTIONS[index].operation;
@@ -119,6 +135,7 @@ export default class RequestScreen extends React.Component {
 
         this.setState({ list: list });
     }
+
     render() {
         console.log(this.state);
 
@@ -128,16 +145,23 @@ export default class RequestScreen extends React.Component {
                     values={ACTIONS.map(action => action.filterName)}
                     onChange={this.onChange}
                 />
-                <ScrollView onScrollBeginDrag={e => {
-                    this._scrolling = true;
-                }} onScrollEndDrag={e => {
-                    this._scrolling = false;
-                }}>
-                    <WingBlank size="lg">
-                        <WhiteSpace size="lg" />
-                        {this.state.list.map(this._renderCard.bind(this))}
-                    </WingBlank>
-                </ScrollView>
+                <PullToScroll
+                    dataArray={this.state.list}
+                    renderRow={this._renderCard.bind(this)}
+                    onScrollStart={e => {
+                        this._scrolling = true;
+                    }}
+                    onScrollEnd={e => {
+                        this._scrolling = false;
+                    }}
+                    onRefresh={function () {
+                        if (!this.state.enableLoad) return;
+
+                        this._loadList();
+                    }.bind(this)}
+                    refreshing={this.state.refreshing}
+                    enableRefresh={this.state.enableLoad}
+                ></PullToScroll>
             </View>
         );
     }

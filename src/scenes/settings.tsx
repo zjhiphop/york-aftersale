@@ -8,6 +8,7 @@ import {
 import { TcpManager } from '../utils/tcp';
 import DvcSvc from '../utils/dvc-svc';
 import OrderSvc from '../utils/order-svc';
+import PullToScroll from '../components/pull-to-scroll';
 
 const prompt = Modal.prompt;
 export default class SettingScreen extends React.Component {
@@ -17,12 +18,19 @@ export default class SettingScreen extends React.Component {
 
     public state = {
         list: [],
+        refreshing: false,
+        enableLoad: true,
         percent: 10,
+        params: { customerPhone: '' },
         focused: false,
         searchText: '',
         connecting: false,
         loadingText: '正在连接温控热点(York)...'
     }
+
+    _page = 1
+    _pageSize = 10
+
     componentDidMount() {
         const { state } = this.props['navigation'];
 
@@ -30,10 +38,21 @@ export default class SettingScreen extends React.Component {
 
         if (!state.params) return;
 
-        DvcSvc.list(state.params.data.customerPhone).then(res => {
+        this.setState({ params: state.params })
+        this._loadList();
+    }
 
+    _loadList() {
+
+        this.setState({ refreshing: true });
+
+        DvcSvc.list(this.state.params.customerPhone, this._page++, this._pageSize).then(res => {
+
+            let list = res.list.concat(this.state.list)
             this.setState({
-                list: res.list
+                list: res.list,
+                enableLoad: (res.page - 1) * res.limit + res.list.length < res.total,
+                refreshing: false
             });
 
         })
@@ -129,20 +148,32 @@ export default class SettingScreen extends React.Component {
                     />
                 </List>
                 <WhiteSpace />
+
                 <List renderHeader={() => '温控列表'}>
-
-                    {
-                        this.state.list.map(item => {
-                            return <List.Item multipleLine arrow="horizontal" onClick={e => {
-                                navigate('SettingDetail', { data: item });
-                            }}>
-                                {item.location} <List.Item.Brief>{item.contact}</List.Item.Brief>
-                            </List.Item>
-                        })
-                    }
-
                 </List>
+
+                <PullToScroll
+                    dataArray={this.state.list}
+                    renderRow={this._renderResults.bind(this)}
+                    onRefresh={function () {
+                        if (!this.state.enableLoad) return;
+
+                        this._loadList();
+                    }.bind(this)}
+                    refreshing={this.state.refreshing}
+                    enableRefresh={this.state.enableLoad}
+                ></PullToScroll>
             </View >
         );
+    }
+
+    _renderResults(item) {
+        const { navigate } = this.props['navigation'];
+
+        return <List.Item multipleLine arrow="horizontal" onClick={e => {
+            navigate('SettingDetail', { data: item });
+        }}>
+            {item.location} <List.Item.Brief>{item.contact}</List.Item.Brief>
+        </List.Item>
     }
 };

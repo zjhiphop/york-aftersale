@@ -7,9 +7,11 @@ const PATH = {
     UPDATE: '/devive/'
 }
 
+const PageSize = 25;
+
 let DvcSvc = {
-    list(q) {
-        return API.get(PATH.LIST + `?query=${q}`);
+    list(q, page = 0, limit = PageSize) {
+        return API.get(PATH.LIST + `?page=${page}&limit=${limit}&query=${q}`);
     },
 
     update(id, location) {

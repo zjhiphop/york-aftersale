@@ -8,9 +8,11 @@ const PATH = {
     DONE: '/order/{id}/done'
 }
 
+const PageSize = 25;
+
 let OrderSvc = {
-    list(status?) {
-        return API.get(PATH.LIST + (status ? '?status=' + status : ''));
+    list(status?, page = 0, limit = PageSize) {
+        return API.get(PATH.LIST + `?page=${page}&limit=${limit}` + (status ? '&status=' + status : ''));
     },
     detail(id) {
         return API.get(PATH.DETAIL + id);
