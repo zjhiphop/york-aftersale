@@ -148,6 +148,7 @@ export function composeMQTTPayload(config) {
                 ensureBytes(config['CTRL_KEY' + CTRL_KEY.OperationalMode], 1),
                 ensureBytes(config['CTRL_KEY' + CTRL_KEY.SilentMode], 1),
                 ensureBytes(config['CTRL_KEY' + CTRL_KEY.FaultReset], 1),
+                ensureBytes(config['TIME_KEY' + TIME_KEY.Year], 1),
                 ensureBytes(config['TIME_KEY' + TIME_KEY.Month], 1),
                 ensureBytes(config['TIME_KEY' + TIME_KEY.Day], 1),
                 ensureBytes(config['TIME_KEY' + TIME_KEY.Hour], 1),
