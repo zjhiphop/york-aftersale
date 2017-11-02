@@ -253,8 +253,8 @@ export default class SettingDetailScreen extends React.Component {
             ['TIME_KEY' + TIME_KEY.Year]: parseInt(expireDate.getFullYear().toString().slice(-2)).toString(16),
             ['TIME_KEY' + TIME_KEY.Month]: (expireDate.getMonth() + 1).toString(16),
             ['TIME_KEY' + TIME_KEY.Day]: expireDate.getDate().toString(16),
-            ['TIME_KEY' + TIME_KEY.Hour]: (expireDate.getMonth() + 1).toString(16),
-            ['TIME_KEY' + TIME_KEY.Minute]: (expireDate.getMonth() + 1).toString(16)
+            ['TIME_KEY' + TIME_KEY.Hour]: expireDate.getHours().toString(16),
+            ['TIME_KEY' + TIME_KEY.Minute]: expireDate.getMinutes().toString(16)
         }));
     }
     saveCtrl() {
