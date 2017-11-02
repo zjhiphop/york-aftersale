@@ -22,12 +22,13 @@ import {
     payloadParser,
     MQTT_ACTION,
     errorParser,
-    POWER, ACTION_TYPE
+    POWER, ACTION_TYPE, MODE
 } from '../utils/misc';
 import { NavBarButtonPress } from 'react-navigation';
 import TextStyles from '../style/text';
 import OrderSvc from '../utils/order-svc';
 import DvcSvc from '../utils/dvc-svc';
+import moment from 'moment';
 
 const Item = List.Item;
 const Brief = Item.Brief;
@@ -237,21 +238,26 @@ export default class SettingDetailScreen extends React.Component {
         },
         visible: false
     }
-    saveCtrl() {
-        // ctrl gate
-        // Mqtt.send(TOPIC_CTRL, composeMQTTPayload({
-        //     action: MQTT_ACTION.DC,
-        //     MAC: MAC,
-        //     [CTRL_KEY.PowerSet]: '',
-        //     [CTRL_KEY.OperationalMode]: '',
-        //     [CTRL_KEY.SilentMode]: '',
-        //     [CTRL_KEY.FaultReset]: '',
-        //     [TIME_KEY.Month]: '',
-        //     [TIME_KEY.Day]: '',
-        //     [TIME_KEY.Hour]: '',
-        //     [TIME_KEY.Minute]: ''
-        // }));
 
+    setExpireTimeCtrl(date) {
+        let expireDate = new Date(date || Date.now());
+
+        // ctrl gate
+        Mqtt.send(TOPIC_CTRL, composeMQTTPayload({
+            action: MQTT_ACTION.DC,
+            MAC: MAC,
+            ['CTRL_KEY' + CTRL_KEY.PowerSet]: POWER.DISABLE,
+            ['CTRL_KEY' + CTRL_KEY.OperationalMode]: MODE.COLD_PLAIN_HEAT,
+            ['CTRL_KEY' + CTRL_KEY.SilentMode]: '00',
+            ['CTRL_KEY' + CTRL_KEY.FaultReset]: '00',
+            ['TIME_KEY' + TIME_KEY.Year]: parseInt(expireDate.getFullYear().toString().slice(-2)).toString(16),
+            ['TIME_KEY' + TIME_KEY.Month]: (expireDate.getMonth() + 1).toString(16),
+            ['TIME_KEY' + TIME_KEY.Day]: expireDate.getDate().toString(16),
+            ['TIME_KEY' + TIME_KEY.Hour]: (expireDate.getMonth() + 1).toString(16),
+            ['TIME_KEY' + TIME_KEY.Minute]: (expireDate.getMonth() + 1).toString(16)
+        }));
+    }
+    saveCtrl() {
         // config gate
         let payload = composeMQTTPayload({
             action: MQTT_ACTION.CFG,

@@ -20,6 +20,7 @@ export enum CTRL_KEY {
 }
 
 export enum TIME_KEY {
+    Year,
     Month,
     Day,
     Hour,
@@ -39,7 +40,8 @@ export enum CFG_KEY {
 
 export enum POWER {
     OFF,
-    ON
+    ON,
+    DISABLE
 }
 
 export enum MODE {
@@ -142,14 +144,14 @@ export function composeMQTTPayload(config) {
                 HEADER,
                 deviceType,
                 MAC,
-                ensureBytes(config[CTRL_KEY.PowerSet], 1),
-                ensureBytes(config[CTRL_KEY.OperationalMode], 1),
-                ensureBytes(config[CTRL_KEY.SilentMode], 1),
-                ensureBytes(config[CTRL_KEY.FaultReset], 1),
-                ensureBytes(config[TIME_KEY.Month], 1),
-                ensureBytes(config[TIME_KEY.Day], 1),
-                ensureBytes(config[TIME_KEY.Hour], 1),
-                ensureBytes(config[TIME_KEY.Minute], 1),
+                ensureBytes(config['CTRL_KEY' + CTRL_KEY.PowerSet], 1),
+                ensureBytes(config['CTRL_KEY' + CTRL_KEY.OperationalMode], 1),
+                ensureBytes(config['CTRL_KEY' + CTRL_KEY.SilentMode], 1),
+                ensureBytes(config['CTRL_KEY' + CTRL_KEY.FaultReset], 1),
+                ensureBytes(config['TIME_KEY' + TIME_KEY.Month], 1),
+                ensureBytes(config['TIME_KEY' + TIME_KEY.Day], 1),
+                ensureBytes(config['TIME_KEY' + TIME_KEY.Hour], 1),
+                ensureBytes(config['TIME_KEY' + TIME_KEY.Minute], 1),
                 TAIL
             ].join('');
             break;
