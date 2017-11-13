@@ -42,13 +42,13 @@ const hotOutTempRange = seq(61).slice(30).map(item => { return { value: item, la
 const ctrlRange = [{ value: 0, label: '系统回水' }, { value: 1, label: '系统出水' }];
 const tempWaterActionRange = [...Array(4).keys()].slice(1).map(item => { return { value: item, label: item } }); // 1-3
 
-const MAC = 'F0FE6B2F980E0000';
-const TOPIC_DATA = `/MAC/${MAC}/DA`;
-const TOPIC_CTRL = `/MAC/${MAC}/DC`;
-const TOPIC_CFG = `/MAC/${MAC}/CFG`;
-const TOPIC_DR = `/MAC/${MAC}/DR`;
-const TOPIC_ERROR = `/MAC/${MAC}/ERROR`;
-const TOPIC_ACK = `/MAC/${MAC}/ACK`;
+let MAC = 'F0FE6B2F980E0000';
+let TOPIC_DATA = `/MAC/${MAC}/DA`;
+let TOPIC_CTRL = `/MAC/${MAC}/DC`;
+let TOPIC_CFG = `/MAC/${MAC}/CFG`;
+let TOPIC_DR = `/MAC/${MAC}/DR`;
+let TOPIC_ERROR = `/MAC/${MAC}/ERROR`;
+let TOPIC_ACK = `/MAC/${MAC}/ACK`;
 const customIcon = src => <img src={src} className="am-icon am-icon-xs" alt="icon" />;
 
 const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
@@ -61,6 +61,25 @@ if (isIPhone) {
 export default class SettingDetailScreen extends React.Component {
     constructor(props) {
         super(props);
+
+        const { state } = this.props['navigation'];
+
+        console.log(state.params);
+
+        if (!state.params) return;
+
+        this.initTopic(state.params.data.mac);
+    }
+
+    initTopic(mac) {
+
+        MAC = mac;
+        TOPIC_DATA = `/MAC/${MAC}/DA`;
+        TOPIC_CTRL = `/MAC/${MAC}/DC`;
+        TOPIC_CFG = `/MAC/${MAC}/CFG`;
+        TOPIC_DR = `/MAC/${MAC}/DR`;
+        TOPIC_ERROR = `/MAC/${MAC}/ERROR`;
+        TOPIC_ACK = `/MAC/${MAC}/ACK`;
     }
 
     _data: { _id: null }
