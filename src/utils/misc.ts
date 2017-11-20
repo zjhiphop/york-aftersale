@@ -302,7 +302,7 @@ function parseConfig(payload) {
             hotOutTemp: temp2Internal(hotTempOut, true),
             coldCtrl: parseInt(coolCtrl, 16),
             hotCtrl: parseInt(hotCtrl, 16),
-            tempWaterAction: parseInt(setAction, 16)
+            tempWaterAction: temp2Internal(setAction, true)
         }
     }
 }
