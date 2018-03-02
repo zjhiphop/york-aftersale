@@ -126,12 +126,13 @@ export function composeMQTTPayload(config) {
     let payload = '';
     let HEADER = 48;
     let TAIL = 54;
-    let deviceType = 'D0';
+    let deviceType = 'DB';
+
     let action = config.action;
     let MAC = config.MAC;
 
     switch (action) {
-        //”’H’(1Byte)+Dev_Type(0xD0,1Byte)+Dev_ID(8Byte)+’T’(1Byte)
+        //”’H’(1Byte)+Dev_Type(0xDB,1Byte)+Dev_ID(8Byte)+’T’(1Byte)
         case MQTT_ACTION.DR:
             payload = [HEADER, deviceType, ACTION_TYPE.STATUS, MAC, TAIL].join('');
             break;
@@ -139,7 +140,7 @@ export function composeMQTTPayload(config) {
             payload = [HEADER, deviceType, ACTION_TYPE.CONFIG, MAC, TAIL].join('');
             break;
         case MQTT_ACTION.DC:
-            //”’H’(1Byte)+Dev_Type(0xD0,1Byte)+Dev_ID(8Byte)+YORK_MASTER_CTRL_CMD_TYPEDEF(4Byte)+EXEC_DATE_TYPEDEF(4Byte)+’T’(1Byte 
+            //”’H’(1Byte)+Dev_Type(0xDB,1Byte)+Dev_ID(8Byte)+YORK_MASTER_CTRL_CMD_TYPEDEF(4Byte)+EXEC_DATE_TYPEDEF(4Byte)+’T’(1Byte 
             payload = [
                 HEADER,
                 deviceType,
@@ -157,7 +158,7 @@ export function composeMQTTPayload(config) {
             ].join('');
             break;
         case MQTT_ACTION.CFG:
-            //”’H’(1Byte)+Dev_Type(0xD0,1Byte)+Dev_ID(8Byte)+YORK_MASTER_CFG_PARAM_TYPEDEF(14Byte)+’T’(1Byte)
+            //”’H’(1Byte)+Dev_Type(0xDB,1Byte)+Dev_ID(8Byte)+YORK_MASTER_CFG_PARAM_TYPEDEF(14Byte)+’T’(1Byte)
             payload = [
                 HEADER,
                 deviceType,
@@ -267,7 +268,7 @@ function parseStatus(payload) {
     }
 }
 
-// 48 D0 C1 F0FE6B2F980E0000 0000 0000 0000 0000 00 00 00 00 0000 0000 54
+// 48 DB C1 F0FE6B2F980E0000 0000 0000 0000 0000 00 00 00 00 0000 0000 54
 /**
  * 
  * @param payload 
@@ -307,7 +308,7 @@ function parseConfig(payload) {
     }
 }
 
-// 48 D0 F0FE6B2F980E0000 01 00 00 0000 00009001F401FA0054
+// 48 DB F0FE6B2F980E0000 01 00 00 0000 00009001F401FA0054
 export function payloadParser(payload) {
     let actionType = payload.slice(4, 6);
     let result;
@@ -327,7 +328,7 @@ export function payloadParser(payload) {
 }
 
 export function errorParser(payload) {
-    if (!payload) return {};
+    if (!payload) return { errorCode: '', errMsg: '' };
 
     let errorCode = payload.slice(payload.length - 4, payload.length - 2);
     let errMsg = '';

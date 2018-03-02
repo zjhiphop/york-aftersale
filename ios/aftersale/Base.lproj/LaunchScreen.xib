@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -22,8 +22,12 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="eU2-HW-n0z" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottomMargin" id="33N-8T-eee"/>
+                <constraint firstItem="eU2-HW-n0z" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="topMargin" id="8Qp-S5-e68"/>
+                <constraint firstItem="eU2-HW-n0z" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leadingMargin" id="EE5-MO-8Gi"/>
                 <constraint firstAttribute="bottomMargin" secondItem="eU2-HW-n0z" secondAttribute="bottom" id="WSW-wW-c7u"/>
                 <constraint firstItem="eU2-HW-n0z" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="gId-OS-lWo"/>
+                <constraint firstAttribute="trailingMargin" secondItem="eU2-HW-n0z" secondAttribute="trailing" id="muy-uM-tBG"/>
                 <constraint firstItem="eU2-HW-n0z" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="nJ0-mk-uFE"/>
                 <constraint firstAttribute="trailing" secondItem="eU2-HW-n0z" secondAttribute="trailing" id="oGA-3t-Jhd"/>
             </constraints>

@@ -131,7 +131,10 @@ export default class SettingDetailScreen extends React.Component {
         });
 
         EventRegister.on(TOPIC_ERROR, payload => {
-            console.error('配置出错:', errorParser(payload));
+            let error = errorParser(payload);
+
+            console.error('配置出错:', error);
+            Toast.show(error.errMsg || '');
         });
 
         EventRegister.on(TOPIC_ACK, payload => {

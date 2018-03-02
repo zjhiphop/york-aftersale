@@ -1247,7 +1247,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.bolang.afs;
 				PRODUCT_NAME = aftersale;
-				PROVISIONING_PROFILE = "3344fddc-af73-4957-abc4-42f362d252d1";
+				PROVISIONING_PROFILE = "93ea2c6a-b272-4230-b03b-11950998d2d3";
 				PROVISIONING_PROFILE_SPECIFIER = "bolangcommon-adhoc";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
